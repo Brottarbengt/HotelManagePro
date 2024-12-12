@@ -1,0 +1,96 @@
+Bransch standard!
+==================================================================================================
+
+/HotelApp
+   Program.cs
+   App.cs
+
+Vertical Slice variant
+-----------------------------------------------
+    /Features
+       /Booking
+          /Models
+            Booking.cs
+          /Dtos
+            BookingDTO.cs
+          BookingController.cs
+          BookingService.cs
+       /Room
+       /Invoicing
+       /Customer
+    /Infrastructure
+        DbContext.cs
+        DataInit.cs
+----------------------------------------------
+
+  /Controllers
+    - CustomerController.cs
+    - BookingController.cs
+    - RoomController.cs
+    - InvoiceController.cs
+  /Models
+    - Customer.cs
+    - Booking.cs
+    - Room.cs
+    - Invoice.cs
+  /Data
+    - ApplicationDbContext.cs
+    - DataInitializer.cs
+  /Services
+    - CustomerService.cs
+    - BookingService.cs
+    - RoomService.cs
+    - InvoiceService.cs
+  /DTOs
+    - CustomerDTO.cs
+    - BookingDTO.cs
+    - RoomDTO.cs
+    - InvoiceDTO.cs
+  /Migrations
+    - EF Core hanterar innehållet i denna mapp
+  /Utilities
+    - DisplayMainMenu.cs
+    - CentreText.cs
+    - SpectreTables.cs
+    - osv.
+
+Controllers: 
+	Innehåller alla controllerklasser som kommunicerar med övriga tjänsterna.
+	Tar emot och vidarebefordrar användarens input (oftast till en service) och skickar svaret tillbaka.
+	tex. Hej, jag vill skapa en kund! (CustomerService.cs)
+             Visa mig den på skärmen! (CustomerDisplay.cs) 
+Models: 
+	Här definieras alla entiteter som Customer, Booking, Room, och Invoice.
+	Dessa motsvarar SQL entiteter. Endast DATA klasser! Ingen funktionalitet
+Data:
+	Här finns ApplicationDbContext.cs som definierar alla entitetsrelationer och databaskontext.
+	ApplicationDbContext.cs abstakterar bort databasen och blir vår koppling till datat.
+	EF-Core är en Repository Pattern.
+	Här finns även klassen DataInitializer.cs
+Services: 
+	Här finns en _instance av vår DbContext.
+        Hantera kopplingen till databasen
+	Gör själva arbetet - CRUD
+	tex. Hej, jag har skapat en användare! (CustomerService.cs)
+	Dessa klasser kan delas upp enligt CRUD för ännu bättre separation of Concern.
+	/Services
+    	  /Customer
+            - CreateCustomer.cs
+            - ReadCustomer.cs
+            - UpdateCustomer.cs
+            - DeleteCustomer.cs
+	  /Booking
+            - CreateBooking.cs
+            - ReadBooking.cs
+            - UpdateBooking.cs
+            - DeleteBooking.cs
+	  osv.
+DTOs: 
+	Data Transfer Objects som används för att skicka och ta emot data mellan olika lager.
+Migrations: 
+	För databas-migreringar.
+	Denna mapp hanteras automatiskt av EF-Core. Mer om detta senare.
+Utilities: 
+	Här kan du lägga allmänna hjälpfunktioner.
+	Ofta 'Static' classes som är endast enkla verktyg.
+	Tex. Display Menu klasser
