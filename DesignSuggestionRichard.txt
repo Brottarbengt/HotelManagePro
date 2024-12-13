@@ -21,8 +21,10 @@ Vertical Slice variant
     /Infrastructure
         DbContext.cs
         DataInit.cs
-----------------------------------------------
 
+
+Layered Architecture?
+----------------------------------------------
   /Controllers
     - CustomerController.cs
     - BookingController.cs

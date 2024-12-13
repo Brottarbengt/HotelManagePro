@@ -10,8 +10,6 @@
   <ItemGroup>
     <Folder Include="Features\Booking\DTOs\" />
     <Folder Include="Features\Customer\DTOs\" />
-    <Folder Include="Features\Customer\Models\" />
-    <Folder Include="Features\Invoice\Models\" />
     <Folder Include="Features\Invoice\DTOs\" />
     <Folder Include="Features\Room\DTOs\" />
   </ItemGroup>

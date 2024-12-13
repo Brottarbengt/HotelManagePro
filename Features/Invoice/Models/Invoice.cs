@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HotelManagePro.Features.Invoice.Models
+{
+    internal class Invoice
+    {
+        public int InvoiceId { get; set; }
+        public int TotalSum { get; set; }
+
+    }
+}

@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Booking.Models
+namespace HotelManagePro.Utils
 {
-    internal class Booking
+    internal class InputValidator
     {
-        public int BookingId { get; set; }
-        
     }
 }

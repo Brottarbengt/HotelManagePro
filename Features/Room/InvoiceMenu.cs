@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Booking.Models
+namespace HotelManagePro.Features.Room
 {
-    internal class Booking
+    internal class InvoiceMenu
     {
-        public int BookingId { get; set; }
-        
+
     }
 }
