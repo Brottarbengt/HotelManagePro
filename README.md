@@ -1,1 +1,10 @@
 # HotelManagePro
+
+This Hotel:
+        
+         A three-story hotel with ten rooms each level.
+         6 Single and 4 Doubles each.
+         1 - 6 is single and 7 - 10 is double
+         RoomNumbers start with level followed by roomnumber.
+         Ex. Room 010 is the tenth room on ground floor hence a double.
+             Room 106 is the sixth room on second floor hence a single.

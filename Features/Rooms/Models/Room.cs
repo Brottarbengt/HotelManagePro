@@ -1,10 +1,11 @@
-﻿using System;
+﻿using HotelManagePro.Features.Bookings.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Room.Models
+namespace HotelManagePro.Features.Rooms.Models
 {
     public enum TypeOfRoom
     {
@@ -17,6 +18,8 @@ namespace HotelManagePro.Features.Room.Models
         public TypeOfRoom RoomType { get; set; }
         public int RoomNumber { get; set; }
         public double Size { get; set; }
+        public bool IsActive { get; set; }
+        public Booking Booking { get; set; }
 
     }
 }

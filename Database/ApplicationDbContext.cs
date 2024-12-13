@@ -1,4 +1,4 @@
-﻿using HotelManagePro.Features.Room.Models;
+﻿using HotelManagePro.Features.Rooms.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using System;
