@@ -8,10 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Bookings\DTOs\" />
-    <Folder Include="Features\Customers\DTOs\" />
-    <Folder Include="Features\Invoices\DTOs\" />
-    <Folder Include="Features\Rooms\DTOs\" />
+    <Folder Include="Features\Booking\DTOs\" />
+    <Folder Include="Features\Customer\DTOs\" />
+    <Folder Include="Features\Invoice\DTOs\" />
+    <Folder Include="Features\Room\DTOs\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +21,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

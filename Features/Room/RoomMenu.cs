@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Invoices
+namespace HotelManagePro.Features.Room
 {
-    internal class InvoiceMenu
+    internal class RoomMenu
     {
+
     }
 }

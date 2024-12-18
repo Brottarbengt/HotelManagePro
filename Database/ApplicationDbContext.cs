@@ -1,4 +1,4 @@
-﻿using HotelManagePro.Features.Rooms.Models;
+﻿using HotelManagePro.Features.Room.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using System;
@@ -11,7 +11,7 @@ namespace HotelManagePro.Database
 {
     internal class ApplicationDbContext : DbContext
     {
-        public DbSet<Room> Rooms { get; set; }
+        public DbSet<Rooms> Rooms { get; set; }
 
         public ApplicationDbContext()
         {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Bookings
+namespace HotelManagePro.Features.Booking
 {
     internal class NewBookingMenu
     {
