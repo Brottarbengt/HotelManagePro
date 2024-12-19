@@ -1,4 +1,7 @@
-﻿using System;
+﻿using HotelManagePro.Database;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,20 +9,26 @@ using System.Threading.Tasks;
 
 namespace HotelManagePro
 {
-    internal class App
+    public class App
     {
+        public void Run()
+        {
+            var builder = new ConfigurationBuilder().AddJsonFile($"appsettings.json", true, true);
+            var config = builder.Build();
+
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>();
+            var connectionString = config.GetConnectionString("DefaultConnection");
+            options.UseSqlServer(connectionString);
+
+            using (var dbContext = new ApplicationDbContext(options.Options))
+            {
+                dbContext.Database.Migrate();
+            }
+        }
+
+
         /* 
          
-         This Hotel:
-        
-         A three-story hotel with ten rooms each level.
-         6 Single and 4 Doubles each.
-         1 - 6 is single and 7 - 10 is double
-         RoomNumbers start with level followed by roomnumber.
-         Ex. Room 010 is the tenth room on ground floor hence a double.
-             Room 106 is the sixth room on second floor hence a single.
-          
-          
          
          * TODO
          
@@ -49,6 +58,19 @@ namespace HotelManagePro
         ===============  INVOICE  ====================
             - Vilka Props/Attributer behövs OCH vilka ska kunna vara NULL!?
 
+
+
+        
+         This Hotel:
+        
+         A three-story hotel with ten rooms each level.
+         6 Single and 4 Doubles each.
+         1 - 6 is single and 7 - 10 is double
+         RoomNumbers start with level followed by roomnumber.
+         Ex. Room 010 is the tenth room on ground floor hence a double.
+             Room 106 is the sixth room on second floor hence a single.
+          
+          
 
         */
     }

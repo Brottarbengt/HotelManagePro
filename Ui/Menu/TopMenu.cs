@@ -40,7 +40,7 @@ namespace HotelManagePro.Display.Menu
                     //EditRoomDataMenu.ShowMenu();
                     break;
                 case 4:
-                    System.Environment.Exit(0);
+                    Environment.Exit(0);
                     break;
                 default:
                     break;

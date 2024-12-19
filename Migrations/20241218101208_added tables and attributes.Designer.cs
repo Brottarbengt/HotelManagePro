@@ -4,6 +4,7 @@ using HotelManagePro.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelManagePro.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241218101208_added tables and attributes")]
+    partial class addedtablesandattributes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,40 +27,40 @@ namespace HotelManagePro.Migrations
 
             modelBuilder.Entity("HotelManagePro.Features.Booking.Models.Bookings", b =>
                 {
-                    b.Property<int>("BookingsId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingsId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly>("ArrivalDate")
                         .HasColumnType("date");
 
-                    b.Property<int?>("CustomersId")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<DateOnly>("DepartureDate")
                         .HasColumnType("date");
 
-                    b.Property<int>("InvoicesId")
+                    b.Property<int>("InvoiceId")
                         .HasColumnType("int");
 
-                    b.HasKey("BookingsId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("CustomersId");
+                    b.HasIndex("CustomerId");
 
-                    b.HasIndex("InvoicesId");
+                    b.HasIndex("InvoiceId");
 
                     b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("HotelManagePro.Features.Customer.Models.Customers", b =>
                 {
-                    b.Property<int>("CustomersId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomersId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
@@ -78,18 +81,18 @@ namespace HotelManagePro.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CustomersId");
+                    b.HasKey("Id");
 
                     b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("HotelManagePro.Features.Invoice.Models.Invoices", b =>
                 {
-                    b.Property<int>("InvoicesId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InvoicesId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("IsPaid")
                         .HasColumnType("bit");
@@ -97,20 +100,20 @@ namespace HotelManagePro.Migrations
                     b.Property<int>("TotalSum")
                         .HasColumnType("int");
 
-                    b.HasKey("InvoicesId");
+                    b.HasKey("Id");
 
                     b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("HotelManagePro.Features.Room.Models.Rooms", b =>
                 {
-                    b.Property<int>("RoomsId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoomsId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BookingsId")
+                    b.Property<int>("BookingId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
@@ -125,24 +128,28 @@ namespace HotelManagePro.Migrations
                     b.Property<double>("Size")
                         .HasColumnType("float");
 
-                    b.HasKey("RoomsId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("BookingsId");
+                    b.HasIndex("BookingId");
 
                     b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("HotelManagePro.Features.Booking.Models.Bookings", b =>
                 {
-                    b.HasOne("HotelManagePro.Features.Customer.Models.Customers", null)
+                    b.HasOne("HotelManagePro.Features.Customer.Models.Customers", "Customer")
                         .WithMany("Bookings")
-                        .HasForeignKey("CustomersId");
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("HotelManagePro.Features.Invoice.Models.Invoices", "Invoice")
                         .WithMany()
-                        .HasForeignKey("InvoicesId")
+                        .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Customer");
 
                     b.Navigation("Invoice");
                 });
@@ -151,7 +158,7 @@ namespace HotelManagePro.Migrations
                 {
                     b.HasOne("HotelManagePro.Features.Booking.Models.Bookings", "Booking")
                         .WithMany("Rooms")
-                        .HasForeignKey("BookingsId")
+                        .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace HotelManagePro.Features.Room
 {
-    internal class RoomMenu
+    public class RoomMenu
     {
-
+        private static string[] menuOptions = new string[] {
+            "Manage Rooms",    // shows all rooms first        
+            "Show All Rooms",            
+            "Back to Top Menu"
+        };
     }
 }

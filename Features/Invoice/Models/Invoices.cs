@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace HotelManagePro.Features.Invoice.Models
 {
-    internal class Invoices
+    public class Invoices
     {
-        public int InvoiceId { get; set; }
+        public int InvoicesId { get; set; }
         public int TotalSum { get; set; }
         public bool IsPaid { get; set; }
        

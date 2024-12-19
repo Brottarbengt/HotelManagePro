@@ -1,4 +1,7 @@
-﻿using HotelManagePro.Features.Room.Models;
+﻿using HotelManagePro.Features.Booking.Models;
+using HotelManagePro.Features.Customer.Models;
+using HotelManagePro.Features.Invoice.Models;
+using HotelManagePro.Features.Room.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using System;
@@ -12,6 +15,9 @@ namespace HotelManagePro.Database
     internal class ApplicationDbContext : DbContext
     {
         public DbSet<Rooms> Rooms { get; set; }
+        public DbSet<Bookings> Bookings { get; set; }
+        public DbSet<Customers> Customers { get; set; }
+        public DbSet<Invoices> Invoices { get; set; }
 
         public ApplicationDbContext()
         {

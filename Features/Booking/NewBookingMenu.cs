@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HotelManagePro.Features.Booking
 {
-    internal class NewBookingMenu
+    public class NewBookingMenu
     {
         // Input för all info necessary for making a booking
 

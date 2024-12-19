@@ -12,14 +12,15 @@ namespace HotelManagePro.Features.Room.Models
         Single,
         Double
     }
-    internal class Rooms
+    public class Rooms
     {
-        public int RoomId { get; set; }
+        public int RoomsId { get; set; }
         public TypeOfRoom RoomType { get; set; }
         public int RoomNumber { get; set; }
         public double Size { get; set; }
         public bool IsActive { get; set; }
         public Bookings Booking { get; set; }
+        public int ExtraBeds { get; set; } // En beräknande prop, om type och size > smth = NrOfBeds. Vad händer med price
 
     }
 }

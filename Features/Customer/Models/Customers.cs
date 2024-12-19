@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 
 namespace HotelManagePro.Features.Customer.Models
 {
-    internal class Customers
+    public class Customers
     {
-        public int CustomerId { get; set; }
+        public int CustomersId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public List<Bookings> Bookings { get; set; }
         public string? Address { get; set; }
-        
+        public bool IsActive { get; set; }
+
     }
 }
