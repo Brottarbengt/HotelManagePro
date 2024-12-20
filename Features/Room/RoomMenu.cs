@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HotelManagePro.Utils.Menu;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +11,31 @@ namespace HotelManagePro.Features.Room
     {
         private static string[] menuOptions = new string[] {
             "Manage Rooms",    // shows all rooms first        
-            "Show All Rooms",            
+            "Show All Rooms",
             "Back to Top Menu"
         };
+        public static void ShowMenu()
+        {
+            MenuGenerator.ShowMenu("Customer Menu", menuOptions, ExecuteSelectedOption);
+        }
+
+        private static void ExecuteSelectedOption(int selectedIndex)
+        {
+            switch (selectedIndex)
+            {
+                case 0:
+                    ;
+                    break;
+                case 1:
+                    ;
+                    break;
+                case 2:
+                    TopMenu.ShowMenu();
+                    break;
+                default:
+                    break;
+            }
+
+        }
     }
 }

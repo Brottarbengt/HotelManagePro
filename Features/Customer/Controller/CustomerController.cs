@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Booking.Controllers
+namespace HotelManagePro.Features.Customer.Controller
 {
-    internal class NewBookingController
+    public class CustomerController
     {
     }
 }

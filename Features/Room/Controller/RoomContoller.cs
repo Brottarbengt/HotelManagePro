@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Utils
+namespace HotelManagePro.Features.Room.Controller
 {
-    internal class InputValidator
+    public class RoomContoller
     {
     }
 }

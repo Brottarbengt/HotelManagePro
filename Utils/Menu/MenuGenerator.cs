@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Display.Menu
+namespace HotelManagePro.Utils.Menu
 {
     public static class MenuGenerator
     {

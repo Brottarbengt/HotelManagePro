@@ -1,9 +1,5 @@
 ﻿using HotelManagePro.Features.Booking.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace HotelManagePro.Features.Room.Models
 {
@@ -14,11 +10,11 @@ namespace HotelManagePro.Features.Room.Models
     }
     public class Rooms
     {
-        public int RoomsId { get; set; }
-        public TypeOfRoom RoomType { get; set; }
-        public int RoomNumber { get; set; }
-        public double Size { get; set; }
-        public bool IsActive { get; set; }
+        public int RoomsId { get; set; }        
+        public required int RoomNumber { get; set; }
+        public required TypeOfRoom RoomType { get; set; }
+        public required double Size { get; set; }
+        public required bool IsActive { get; set; }
         public Bookings Booking { get; set; }
         public int ExtraBeds { get; set; } // En beräknande prop, om type och size > smth = NrOfBeds. Vad händer med price
 

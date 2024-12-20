@@ -11,7 +11,9 @@
     <Folder Include="Features\Booking\DTOs\" />
     <Folder Include="Features\Customer\DTOs\" />
     <Folder Include="Features\Invoice\DTOs\" />
+    <Folder Include="Features\Invoice\Services\" />
     <Folder Include="Features\Room\DTOs\" />
+    <Folder Include="Features\Room\Services\" />
   </ItemGroup>
 
   <ItemGroup>

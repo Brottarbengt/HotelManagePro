@@ -5,19 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Invoice
+namespace HotelManagePro.Features.Customer.Services
 {
-    public class InvoiceMenu
+    public class CustomerMenu
     {
         private static string[] menuOptions = new string[] {
-            "Edit Invoice", // Shows all invoices first
-            "Show All Invoices", // Showing all bookings with invoice or just invoices?
-            "Edit Invoice", // Ska ShowAll() (en månad?) framöver ovan prompt
+            "New Customer",
+            "Search for Customer", // Undermeny med vad man vill söka på för Attrib? alt. söker igenom alla attribut på något som stämmer?
+            "Show All Customers",
+            "Remove Customers (soft Delete)",
+            "DELETE Customer, (WARNING! Hard Delete, only if asked to.)", // Ska ShowAllCustomers
+            "Edit Customer", // Ska ShowAllCustomers, Ska man kunna välja på samma sätt som menyn, dvs använda MenuGenerator?
             "Back to Top Menu"
         };
+
         public static void ShowMenu()
         {
-            MenuGenerator.ShowMenu("Invoice Menu", menuOptions, ExecuteSelectedOption);
+            MenuGenerator.ShowMenu("Customer Menu", menuOptions, ExecuteSelectedOption);
         }
 
         private static void ExecuteSelectedOption(int selectedIndex)
@@ -37,6 +41,14 @@ namespace HotelManagePro.Features.Invoice
                     ;
                     break;
                 case 4:
+                    ;
+                    break;
+                case 5:
+                    ;
+                    break;
+                case 6:
+                    break;
+                case 7:
                     TopMenu.ShowMenu();
                     break;
                 default:

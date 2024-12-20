@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace HotelManagePro.Features.Booking
 {
-    public class NewBookingMenu
+    public class InputValidation
     {
-        // Input för all info necessary for making a booking
-
     }
 }

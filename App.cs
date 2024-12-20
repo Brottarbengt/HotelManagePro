@@ -1,11 +1,8 @@
 ﻿using HotelManagePro.Database;
+using HotelManagePro.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace HotelManagePro
 {
@@ -22,7 +19,7 @@ namespace HotelManagePro
 
             using (var dbContext = new ApplicationDbContext(options.Options))
             {
-                dbContext.Database.Migrate();
+                DataInitializer.InitializeAndSeed(dbContext); // Initialize database and seed data
             }
         }
 
@@ -32,7 +29,7 @@ namespace HotelManagePro
          
          * TODO
          
-         * REFACTOR InputValidator? -StringValidator -NumberValidator osv.
+         * Det blir En Validator per Feature
          * Bygga en CenterAll() för bättre UX?
          * Behöver bena ut hur Menu ska vara strukturerad
          * Kommer MnuGenerator fungera för alla menyer?

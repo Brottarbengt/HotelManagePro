@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace HotelManagePro.Database
 {
-    internal class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
         public DbSet<Rooms> Rooms { get; set; }
         public DbSet<Bookings> Bookings { get; set; }

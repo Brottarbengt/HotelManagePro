@@ -1,5 +1,4 @@
-﻿using HotelManagePro.Features.Customer.Models;
-using HotelManagePro.Features.Invoice.Models;
+﻿using HotelManagePro.Features.Invoice.Models;
 using HotelManagePro.Features.Room.Models;
 using System;
 using System.Collections.Generic;
