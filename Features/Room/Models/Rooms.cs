@@ -16,7 +16,6 @@ namespace HotelManagePro.Features.Room.Models
         public required double Size { get; set; }
         public required bool IsActive { get; set; }
         public Bookings Booking { get; set; }
-        public int ExtraBeds { get; set; } // En beräknande prop, om type och size > smth = NrOfBeds. Vad händer med price
-
+        public int ExtraBeds { get; set; }
     }
 }

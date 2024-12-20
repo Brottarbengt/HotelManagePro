@@ -7,48 +7,56 @@ using System.Threading.Tasks;
 
 namespace HotelManagePro.Features.Booking.Services
 {
-    public static class BookingMenu
+    namespace HotelManagePro.Features.Booking.Services
     {
-
-        private static string[] menuOptions = new string[] {
+        public static class BookingMenu
+        {
+            private static string[] menuOptions = new string[] {
             "New Booking",
-            "Search for Booking", // Undermeny med vad man vill söka på för Attrib? alt. söker igenom alla attribut på något som stämmer?
+            "Search for Booking",
             "Show All Bookings",
-            "Remove Booking", // Ska ShowAllBookings en månad framöver ovan prompt
-            "Edit Booking", // Ska ShowAllBookings en månad framöver ovan prompt
+            "Remove Booking",
+            "Edit Booking",
             "Back to Top Menu"
         };
 
-        public static void ShowMenu()
-        {
-            MenuGenerator.ShowMenu("Bookings Menu", menuOptions, ExecuteSelectedOption);
-        }
-
-        private static void ExecuteSelectedOption(int selectedIndex)
-        {
-            switch (selectedIndex)
+            private static BookingService _bookingService; 
+            public static void SetBookingService(BookingService bookingService)
             {
-                case 0:
-                    BookingService.CreateNewBooking();
-                    break;
-                case 1:
-                    BookingService.SearchBooking();
-                    break;
-                case 2:
-                    BookingService.ShowAllBookings();
-                    break;
-                case 3:
-                    BookingService.RemoveBooking();
-                    break;
-                case 4:
-                    BookingService.EditBooking();
-                    break;
-                case 5:
-                    TopMenu.ShowMenu();
-                    break;
-                default:
-                    break;
+                _bookingService = bookingService;
             }
+
+            public static void ShowMenu()
+            {
+                MenuGenerator.ShowMenu("Bookings Menu", menuOptions, ExecuteSelectedOption);
+            }
+
+            private static void ExecuteSelectedOption(int selectedIndex)
+            {
+                switch (selectedIndex)
+                {
+                    case 0:
+                        _bookingService.CreateNewBooking();  
+                        break;
+                    case 1:
+                        _bookingService.SearchBooking();    
+                        break;
+                    case 2:
+                        _bookingService.ShowAllBookings(); 
+                        break;
+                    case 3:
+                        _bookingService.RemoveBooking();        
+                        break;
+                    case 4:
+                        _bookingService.EditBooking();          
+                        break;
+                    case 5:
+                        TopMenu.ShowMenu();                
+                        break;
+                    default:
+                        break;
+                }
+            }           
         }
     }
 }

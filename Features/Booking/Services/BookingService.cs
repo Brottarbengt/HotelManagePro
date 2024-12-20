@@ -2,31 +2,49 @@
 
 namespace HotelManagePro.Features.Booking.Services
 {
-    public static class BookingService
+    public class BookingService
     {
-        public static void CreateNewBooking()
+        public void CreateNewBooking()
         {
             Console.WriteLine("New Booking");
         }
 
-        public static void SearchBooking()
+        public void SearchBooking()
         {
             Console.WriteLine("Search for Booking");
         }
 
-        public static void ShowAllBookings()
+        public void ShowAllBookings()
         {
             Console.WriteLine("Show All Bookings");
         }
 
-        public static void RemoveBooking()
+        public void RemoveBooking(int BookingId)
         {
-            Console.WriteLine("Remove Booking");
+            ShowAllBookings();
+            Console.WriteLine("Enter Booking ID to remove:");
+            if (int.TryParse(Console.ReadLine(), out int bookingId))
+            {
+                RemoveBooking(bookingId);
+            }
+            else
+            {
+                Console.WriteLine("Invalid input, returning to menu.");  // Sånt här kanske hamnar i validation senare
+            };
         }
 
-        public static void EditBooking()
+        public void EditBooking(int BookingId)
         {
-            Console.WriteLine("Edit Booking");
+            ShowAllBookings();
+            Console.WriteLine("Enter Booking ID to edit:");
+            if (int.TryParse(Console.ReadLine(), out int bookingId))
+            {
+                EditBooking(bookingId);
+            }
+            else
+            {
+                Console.WriteLine("Invalid input, returning to menu.");
+            }
         }
     }
 }
