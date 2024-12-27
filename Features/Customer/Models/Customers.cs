@@ -13,12 +13,9 @@ namespace HotelManagePro.Features.Customer.Models
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public required string Email { get; set; }
-        public required int PhoneNumber { get; set; }
-        public List<Bookings> Bookings { get; set; }
-        public string? StreetName { get; set; }
-        public string? HouseNumber { get; set; }
-        public string? City { get; set; }
-        public string? PostalCode { get; set; } // String for scaling to other countries
+        public required DateTime DateOfBirth { get; set; }
+        public required string PhoneNumber { get; set; }
+        public List<Bookings> Bookings { get; set; }        
         public bool IsActive { get; set; }
 
     }

@@ -8,5 +8,9 @@ namespace HotelManagePro.Features.Booking
 {
     public class InputValidation
     {
+        public string GetCustomerEmail()
+        {
+
+        }
     }
 }

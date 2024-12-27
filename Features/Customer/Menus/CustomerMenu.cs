@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Customer.Services
+namespace HotelManagePro.Features.Customer.Menus
 {
     public class CustomerMenu
     {

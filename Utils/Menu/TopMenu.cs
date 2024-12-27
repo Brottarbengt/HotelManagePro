@@ -12,7 +12,7 @@ namespace HotelManagePro.Utils.Menu
         private static string[] menuOptions = new string[]
         {
             "New Booking",
-            "Boookings Menu",
+            "Bookings Menu",
             "Customer Menu",
             "Room menu",
             "Exit"

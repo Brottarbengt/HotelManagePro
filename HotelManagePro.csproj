@@ -13,10 +13,10 @@
     <Folder Include="Features\Invoice\DTOs\" />
     <Folder Include="Features\Invoice\Services\" />
     <Folder Include="Features\Room\DTOs\" />
-    <Folder Include="Features\Room\Services\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" Version="35.6.1" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">

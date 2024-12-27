@@ -1,4 +1,5 @@
-﻿using HotelManagePro.Features.Room.Models;
+﻿using HotelManagePro.Features.Booking.Models;
+using HotelManagePro.Features.Room.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace HotelManagePro.Features.Invoice.Models
         public int InvoicesId { get; set; }
         public required int TotalSum { get; set; }
         public required bool IsPaid { get; set; }
-       
+        public int ExtraBeds { get; set; }
+        public Bookings Booking { get; set; }
+
     }
 }

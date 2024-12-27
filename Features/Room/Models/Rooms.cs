@@ -16,6 +16,6 @@ namespace HotelManagePro.Features.Room.Models
         public required double Size { get; set; }
         public required bool IsActive { get; set; }
         public Bookings Booking { get; set; }
-        public int ExtraBeds { get; set; }
+        
     }
 }

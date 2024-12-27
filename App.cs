@@ -1,8 +1,9 @@
 ﻿using HotelManagePro.Database;
 using HotelManagePro.Features.Booking.Controller;
+using HotelManagePro.Features.Booking.Menus;
 using HotelManagePro.Features.Booking.Services;
-using HotelManagePro.Features.Booking.Services.HotelManagePro.Features.Booking.Services;
 using HotelManagePro.Utils;
+using HotelManagePro.Utils.Menu;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,24 +32,23 @@ namespace HotelManagePro
                 .AddScoped<BookingService>() 
                 .BuildServiceProvider();
 
-            
+
             using (var scope = serviceProvider.CreateScope())
             {
                 var bookingService = scope.ServiceProvider.GetRequiredService<BookingService>();
                 var bookingController = scope.ServiceProvider.GetRequiredService<BookingController>();
 
-                
+
                 BookingMenu.SetBookingService(bookingService);
 
-               
+
                 using (var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
                 {
-                    DataInitializer.InitializeAndSeed(dbContext); 
+                    DataInitializer.InitializeAndSeed(dbContext);
+                }
 
-               
-                BookingMenu.ShowMenu(); 
+                TopMenu.ShowMenu();
             }
-
 
             /* 
 
@@ -61,6 +61,9 @@ namespace HotelManagePro
              
              
              * Bygga DTOs efter behov
+             * 
+             * 
+             * New Booking -> Väljer Datum -> Visar lediga rum, väljer rum -> Ta Personuppgifter -> Bekräftar booking
 
 
             ===============  BOOKING  ====================
@@ -98,4 +101,4 @@ namespace HotelManagePro
 
             */
         }
-}
+    }
