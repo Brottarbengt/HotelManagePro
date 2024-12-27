@@ -55,10 +55,11 @@ namespace HotelManagePro
 
              * TODO
 
-             * Det blir En Validator per Feature
+             * FluentValidation ska implementeras.
+             * Gogus ska implementeras
              * Bygga en CenterAll() för bättre UX?
-             * Behöver bena ut hur Menu ska vara strukturerad
-             * Kommer MnuGenerator fungera för alla menyer?
+             
+             
              * Bygga DTOs efter behov
 
 

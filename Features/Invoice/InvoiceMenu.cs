@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HotelManagePro.Features.Invoice
 {
-    public class InvoiceMenu
+    public class SearchBookingMenu
     {
         private static string[] menuOptions = new string[] {
             "Edit Invoice", // Shows all invoices first

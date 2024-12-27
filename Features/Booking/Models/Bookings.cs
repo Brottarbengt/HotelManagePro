@@ -1,4 +1,5 @@
-﻿using HotelManagePro.Features.Invoice.Models;
+﻿using HotelManagePro.Features.Customer.Models;
+using HotelManagePro.Features.Invoice.Models;
 using HotelManagePro.Features.Room.Models;
 using System;
 using System.Collections.Generic;
@@ -17,5 +18,6 @@ namespace HotelManagePro.Features.Booking.Models
         public DateOnly ArrivalDate { get; set; }
         public DateOnly DepartureDate { get; set; }
         public List<Rooms> Rooms { get; set; }
+        public Customers Customer { get; set; }
     }
 }

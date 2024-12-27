@@ -45,10 +45,10 @@ namespace HotelManagePro.Features.Booking.Services
                         _bookingService.ShowAllBookings(); 
                         break;
                     case 3:
-                        _bookingService.RemoveBooking();        
+                        _bookingService.ChooseBookingRemove();        
                         break;
                     case 4:
-                        _bookingService.EditBooking();          
+                        _bookingService.ChooseEditBooking();          
                         break;
                     case 5:
                         TopMenu.ShowMenu();                
