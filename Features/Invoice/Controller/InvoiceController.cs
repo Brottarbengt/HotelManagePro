@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Invoice.Controller
+namespace HotelManagePro.Features.Invoices.Controller;
+
+public class InvoiceController
 {
-    public class InvoiceController
-    {
-    }
 }

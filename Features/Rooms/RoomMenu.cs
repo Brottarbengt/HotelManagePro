@@ -5,19 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Invoices
+namespace HotelManagePro.Features.Rooms
 {
-    public class SearchBookingMenu
+    public static class RoomMenu
     {
         private static string[] menuOptions = new string[] {
-            "Edit Invoice", // Shows all invoices first
-            "Show All Invoices", // Showing all bookings with invoice or just invoices?
-            "Edit Invoice", // Ska ShowAll() (en månad?) framöver ovan prompt
+            "Manage Rooms",    // shows all rooms first        
+            "Show All Rooms",
             "Back to Top Menu"
         };
         public static void ShowMenu()
         {
-            MenuGenerator.ShowMenu("Invoice Menu", menuOptions, ExecuteSelectedOption);
+            MenuGenerator.ShowMenu("Customer Menu", menuOptions, ExecuteSelectedOption);
         }
 
         private static void ExecuteSelectedOption(int selectedIndex)
@@ -31,17 +30,12 @@ namespace HotelManagePro.Features.Invoices
                     ;
                     break;
                 case 2:
-                    ;
-                    break;
-                case 3:
-                    ;
-                    break;
-                case 4:
                     TopMenu.ShowMenu();
                     break;
                 default:
                     break;
             }
+
         }
     }
 }

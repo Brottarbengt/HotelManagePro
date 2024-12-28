@@ -28,6 +28,7 @@ namespace HotelManagePro.Utils.Menu
             switch (selectedIndex)
             {
                 case 0:
+                    
                     break;
                 case 1:
                     break;
