@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
-using HotelManagePro.Features.Customers.Models;
+
+namespace HotelManagePro.Features.Customers.Models;
 
 public class CustomerValidator : AbstractValidator<Customer>
 {

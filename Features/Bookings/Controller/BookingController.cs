@@ -29,13 +29,15 @@ public class BookingController
         //Is info correct? yes/No -> EditCustomer() or
         //ConfirmBooking() else: InputNewCustomer()
 
-        //Var Invoice = CreateInvoice(Rooms, arrivalDate, departureDate)
+        //Var newInvoice = CreateInvoice(Rooms, arrivalDate, departureDate)
 
         var newBooking = new Booking
         {
             ArrivalDate = arrivalDate,
             DepartureDate = departureDate,
-
+            Invoice = newInvoice,
+            Rooms = rooms,
+            Customer = cutomer
         };
         
         // save to database
@@ -44,15 +46,25 @@ public class BookingController
 
     public void SearchBookingByEmail()
     {
+        Console.WriteLine("::: SEARCH BY EMAIL :::");
+        Console.WriteLine("Enter customer Email: ");
+        // Call get email input method()
+        // call bookingService.FindActiveBookingByEmail(string customerEmail)
 
     }
 
-    public void RemoveBooking(int bookingId)
+    public void ShowAllBookings()
     {
 
     }
 
-    public void EditBooking(int bookingId)
+    public void RemoveBooking()
+    {
+        // Needs to take input and find Booking, ?SearchByEmail()? then remove.
+        // Next TO DO ?
+    }
+
+    public void EditBooking()
     {
         
     }

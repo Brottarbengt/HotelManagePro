@@ -5,15 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Customers.Services;
+namespace HotelManagePro.Features.Invoices.Services;
 
-public class CustomerService
+public class InvoiceService
 {
     private readonly ApplicationDbContext _dbContext;
 
-    public CustomerService(ApplicationDbContext dbContext)
+    public InvoiceService(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
-
 }

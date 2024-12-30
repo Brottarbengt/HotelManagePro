@@ -4,7 +4,7 @@ using HotelManagePro.Utils.Menu;
 
 namespace HotelManagePro.Features.Bookings.Menus;
 
-public static class SearchBookingMenu
+public static class ManageBookingMenu
 {
     public static void ShowMenu()
     {
@@ -31,10 +31,10 @@ public static class SearchBookingMenu
         switch (selectedIndex)
         {
             case 0:
-                _bookingService.EditBooking();
+                _bookingConroller.EditBooking();
                 break;
             case 1:
-                _bookingController.RemoveBooking();
+                _bookingConroller.RemoveBooking();
                 break;
             case 2:
                 return; // Exit to previous menu

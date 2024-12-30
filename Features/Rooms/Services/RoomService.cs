@@ -16,13 +16,6 @@ namespace HotelManagePro.Features.Rooms.Services
             _dbContext = dbContext;
         }
 
-        public List<Rooms> RoomPicker(DateOnly arrivalDate, DateOnly departureDate)
-        {
-            //first Show available rooms
-
-
-            var room = 
-            return room;
-        }
+        
     }
 }

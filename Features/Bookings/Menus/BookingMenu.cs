@@ -8,8 +8,9 @@ public static class BookingMenu
 {
     private static string[] menuOptions = new string[] {
         "New Booking",
-        "Search for Booking",  // 
-        "Show All Bookings",
+        "Search for Booking",  
+        "Show All Bookings", // Why have this option? and What to show? maybe just BookingId, Name, Email and Dates?
+                             // Maybe have navigation trou list, like datepicker but just up and down, and choose booking with enter.
         "Remove Booking",
         "Edit Booking",
         "Back to Top Menu"
@@ -40,7 +41,7 @@ public static class BookingMenu
                 _bookingController.ShowAllBookings();
                 break;
             case 3:
-                _bookingService.ChooseBookingRemove();
+                _bookingController.RemoveBooking();
                 break;
             case 4:
                 _bookingService.ChooseEditBooking();

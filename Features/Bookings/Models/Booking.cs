@@ -9,7 +9,7 @@ public class Booking
 {
   
     public int BookingsId { get; set; }
-    public required Invoice Invoice { get; set; }  // IsPaid can hämtas via Invoice
+    public required Invoice Invoice { get; set; }  // IsPaid can hämtas via Invoices
     public required DateOnly ArrivalDate { get; set; }
     public required DateOnly DepartureDate { get; set; }
     public required List<Room> Rooms { get; set; }

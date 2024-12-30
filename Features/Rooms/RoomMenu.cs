@@ -7,11 +7,16 @@ using System.Threading.Tasks;
 
 namespace HotelManagePro.Features.Rooms
 {
+
+    // GOING TO BE REWORKED: When enter, allways show all rooms and then you can choose to edit a room or just quit.
+    //                       Using spectre tables and same as datepicker but with rooms.
+    //                       
+                           
     public static class RoomMenu
     {
         private static string[] menuOptions = new string[] {
-            "Manage Rooms",    // shows all rooms first        
-            "Show All Rooms",
+            "Manage rooms",           
+            "Add room",
             "Back to Top Menu"
         };
         public static void ShowMenu()

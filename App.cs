@@ -4,6 +4,10 @@ using HotelManagePro.Features.Bookings.Menus;
 using HotelManagePro.Features.Bookings.Services;
 using HotelManagePro.Features.Customers.Controller;
 using HotelManagePro.Features.Customers.Services;
+using HotelManagePro.Features.Invoices.Services;
+using HotelManagePro.Features.Invoices.Controller;
+using HotelManagePro.Features.Rooms.Controller;
+using HotelManagePro.Features.Rooms.Services;
 using HotelManagePro.Utils;
 using HotelManagePro.Utils.Menu;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +38,10 @@ public class App
             .AddScoped<BookingService>()
             .AddScoped<CustomerService>()
             .AddScoped<CustomerController>()
+            .AddScoped<InvoiceController>()
+            .AddScoped<InvoiceService>()
+            .AddScoped<RoomContoller>()
+            .AddScoped<RoomService>()
             .BuildServiceProvider();
 
 
@@ -42,19 +50,16 @@ public class App
             var bookingService = scope.ServiceProvider.GetRequiredService<BookingService>();
             var bookingController = scope.ServiceProvider.GetRequiredService<BookingController>();
 
-
-            BookingMenu.SetBookingService(bookingService);
-
-
             using (var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
             {
                 DataInitializer.InitializeAndSeed(dbContext);
-            }
-
-            TopMenu.ShowMenu();
+            }            
         }
 
-        /* 
+        TopMenu.ShowMenu();
+    }
+}
+/* 
 
 
          * TODO
@@ -104,5 +109,3 @@ public class App
 
 
         */
-    }
-}

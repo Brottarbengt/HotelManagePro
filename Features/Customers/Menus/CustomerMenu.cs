@@ -10,7 +10,7 @@ namespace HotelManagePro.Features.Customers.Menus
     public class CustomerMenu
     {
         private static string[] menuOptions = new string[] {
-            "New Customer",
+            
             "Search for Customer", // Undermeny med vad man vill söka på för Attrib? alt. söker igenom alla attribut på något som stämmer?
             "Show All Customers",
             "Remove Customers (soft Delete)",
@@ -43,12 +43,7 @@ namespace HotelManagePro.Features.Customers.Menus
                 case 4:
                     ;
                     break;
-                case 5:
-                    ;
-                    break;
-                case 6:
-                    break;
-                case 7:
+                case 5:                    
                     TopMenu.ShowMenu();
                     break;
                 default:
