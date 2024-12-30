@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace HotelManagePro.Features.Rooms.Controller
 {
-    public class RoomContoller
+    public class RoomController
     {
         private readonly RoomService _roomService;
 
-        public RoomContoller(RoomService roomService)
+        public RoomController(RoomService roomService)
         {
             _roomService = roomService;
         }

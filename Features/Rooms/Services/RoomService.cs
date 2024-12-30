@@ -1,4 +1,6 @@
 ﻿using HotelManagePro.Database;
+using HotelManagePro.Features.Rooms.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,23 @@ namespace HotelManagePro.Features.Rooms.Services
             _dbContext = dbContext;
         }
 
+        public List<Room> GetAllRooms()
+        {
+            return _dbContext.Rooms
+                             .Include(r => r.Booking) // included for sorting
+                             .ToList();
+        }
+
         
+        public List<Room> GetAvailableRooms(DateOnly startDate, DateOnly endDate)
+        {
+            return _dbContext.Rooms
+                             .Where(r => r.IsActive &&
+                                        (r.Booking == null ||
+                                         r.Booking.DepartureDate <= startDate ||
+                                         r.Booking.ArrivalDate >= endDate))
+                             .ToList();
+        }
+
     }
 }

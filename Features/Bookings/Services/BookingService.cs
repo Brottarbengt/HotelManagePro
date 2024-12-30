@@ -37,9 +37,11 @@ namespace HotelManagePro.Features.Bookings.Services
         {
             var booking = _dbContext.Bookings.FirstOrDefault(b => b.BookingsId == bookingId);
             
+            if (booking == null)
+                throw new ArgumentException($"Bokning med ID {bookingId} hittades inte.");
+        
             _dbContext.Bookings.Remove(booking);
             _dbContext.SaveChanges();
-           
         }
 
         

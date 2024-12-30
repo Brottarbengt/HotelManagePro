@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HotelManagePro.Utils.Menu
 {
-    public class TopMenu
+    public static class TopMenu
     {
         private static string[] menuOptions = new string[]
         {

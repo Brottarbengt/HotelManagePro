@@ -37,4 +37,11 @@ public class CustomerValidator : AbstractValidator<Customer>
     {
         return dateOfBirth <= DateTime.Now.AddYears(-18);
     }
+
+    public static bool IsValidEmail(string? email)
+    {
+        var validator = new CustomerValidator();
+        var result = validator.Validate(new Customer { Email = email });
+        return result.IsValid;
+    } 
 }

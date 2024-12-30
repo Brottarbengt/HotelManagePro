@@ -40,7 +40,7 @@ public class App
             .AddScoped<CustomerController>()
             .AddScoped<InvoiceController>()
             .AddScoped<InvoiceService>()
-            .AddScoped<RoomContoller>()
+            .AddScoped<RoomController>()
             .AddScoped<RoomService>()
             .BuildServiceProvider();
 
@@ -49,6 +49,12 @@ public class App
         {
             var bookingService = scope.ServiceProvider.GetRequiredService<BookingService>();
             var bookingController = scope.ServiceProvider.GetRequiredService<BookingController>();
+
+            var customerService = scope.ServiceProvider.GetRequiredService<CustomerService>();
+            var customerController = scope.ServiceProvider.GetRequiredService<CustomerController>();
+
+            var roomService = scope.ServiceProvider.GetRequiredService<RoomService>();
+            var roomController = scope.ServiceProvider.GetRequiredService<RoomController>();
 
             using (var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
             {

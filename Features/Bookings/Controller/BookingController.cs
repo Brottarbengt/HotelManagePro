@@ -4,6 +4,9 @@ using HotelManagePro.Features.Bookings.Services;
 using HotelManagePro.Features.Invoices.Models;
 using HotelManagePro.Features.Rooms.Models;
 using HotelManagePro.Utils;
+using HotelManagePro.Features.Customers.Models;
+using Spectre.Console;
+using HotelManagePro.Features.Rooms.Services;
 
 namespace HotelManagePro.Features.Bookings.Controller;
 
@@ -15,17 +18,24 @@ public class BookingController
     {
         _bookingService = bookingService;
     }
+
+    private readonly RoomService _roomService;
+    public BookingController(RoomService roomService)
+    {
+        _roomService = roomService;
+    }
+
     public void CreateNewBooking()
     {
-
+        
         //  New Booking -> Väljer Datum -> Visar lediga rum, väljer rum -> Ta Personuppgifter -> Bekräftar booking
         var arrivalDate = DatePicker.PickDate();
         var departureDate = DatePicker.PickDate();
 
-        // var rooms = RoomPicker(Dates) -> ShowAvailableRooms(Dates) -> Return rooms
+        List<Room> availableRooms = _roomService.GetAvailableRooms(arrivalDate, departureDate);
 
-
-        //var customer = CustomerInput() -> SearchOnEmail() -> if true -> ShowCustomerInfo() for validation,
+        var rooms = RoomPicker.PickRoom(availableRooms);
+                
         //Is info correct? yes/No -> EditCustomer() or
         //ConfirmBooking() else: InputNewCustomer()
 
@@ -43,7 +53,21 @@ public class BookingController
         // save to database
 
     }
+    private string GetValidatedEmailInput()
+        {
+            while (true)
+            {
+                Console.Write("Ange e-postadress: ");
+                var email = Console.ReadLine()?.Trim();
 
+                if (CustomerValidator.IsValidEmail(email))
+                {
+                    return email!;
+                }
+
+                Console.WriteLine("Ogiltig e-postadress. Försök igen.");
+            }
+        }
     public void SearchBookingByEmail()
     {
         Console.WriteLine("::: SEARCH BY EMAIL :::");
