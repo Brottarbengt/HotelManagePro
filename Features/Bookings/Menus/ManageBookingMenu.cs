@@ -44,3 +44,5 @@ public static class ManageBookingMenu
         Console.ReadKey();
     }
 }
+// Why have this option? and What to show? maybe just BookingId, Name, Email and Dates?
+// Maybe have navigation trou list, like datepicker but just up and down, and choose booking with enter.

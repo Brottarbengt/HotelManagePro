@@ -5,18 +5,16 @@ namespace HotelManagePro.Utils;
 
 public class RoomPicker
 {
-
-    public static Room PickRoom(List<Room> rooms)
+    public static List<Room> PickRooms(List<Room> rooms)
     {
         int selectedFloor = 0;
         int selectedRoomIndex = 0;
-
-        //var rooms = rooms;  <- Bhövs denna av någon anledning
+        var selectedRooms = new HashSet<int>();
 
         while (true)
         {
             Console.Clear();
-            RenderRooms(rooms, selectedFloor, selectedRoomIndex);
+            RenderRooms(rooms, selectedFloor, selectedRoomIndex, selectedRooms);
 
             var key = Console.ReadKey(true).Key;
 
@@ -34,14 +32,16 @@ public class RoomPicker
                 case ConsoleKey.DownArrow:
                     selectedFloor = (selectedFloor + 1) % 3;
                     break;
+                case ConsoleKey.Spacebar:
+                    ToggleRoomSelection(rooms, selectedFloor, selectedRoomIndex, selectedRooms);
+                    break;
                 case ConsoleKey.Enter:
-                    int roomNumber = selectedFloor * 100 + (selectedRoomIndex + 1);
-                    return rooms.First(r => r.RoomNumber == roomNumber);
+                    return rooms.Where(r => selectedRooms.Contains(r.RoomNumber)).ToList();
             }
         }
     }
 
-    private static void RenderRooms(List<Room> rooms, int selectedFloor, int selectedRoomIndex)
+    private static void RenderRooms(List<Room> rooms, int selectedFloor, int selectedRoomIndex, HashSet<int> selectedRooms)
     {
         var table = new Table()
             .Centered()
@@ -54,10 +54,10 @@ public class RoomPicker
         for (int i = 0; i < 10; i++)
         {
             string singleRoomText = (i < 6 && i < singleRooms.Count)
-                ? GetRoomMarkup(singleRooms[i], selectedRoomIndex == i)
+                ? GetRoomMarkup(singleRooms[i], selectedRoomIndex == i, selectedRooms.Contains(singleRooms[i].RoomNumber))
                 : "";
             string doubleRoomText = (i >= 6 && (i - 6) < doubleRooms.Count)
-                ? GetRoomMarkup(doubleRooms[i - 6], selectedRoomIndex == i)
+                ? GetRoomMarkup(doubleRooms[i - 6], selectedRoomIndex == i, selectedRooms.Contains(doubleRooms[i - 6].RoomNumber))
                 : "";
 
             table.AddRow(singleRoomText, doubleRoomText);
@@ -71,15 +71,28 @@ public class RoomPicker
 
         AnsiConsole.Write(panel);
         Console.WriteLine();
-        AnsiConsole.MarkupLine("\nUse Arrow Keys [blue]\u25C4 \u25B2 \u25BA \u25BC[/] to \nnavigate and [green]Enter[/] to confirm.");
+        AnsiConsole.MarkupLine("\nUse Arrow Keys [blue]\u25C4 \u25B2 \u25BA \u25BC[/] to navigate, [green]Space[/] to select/deselect, and [green]Enter[/] to confirm.");
     }
 
-    private static string GetRoomMarkup(Room room, bool isSelected)
+    private static string GetRoomMarkup(Room room, bool isSelected, bool isRoomSelected)
     {
-        return isSelected
-            ? $"[green]Room {room.RoomNumber} ({room.RoomType})[/]"
-            : $"Room {room.RoomNumber} ({room.RoomType})";
+        var markup = isSelected ? "[green]" : "";
+        markup += isRoomSelected ? $"[bold]Room {room.RoomNumber} ({room.RoomType})[/]" : $"Room {room.RoomNumber} ({room.RoomType})";
+        markup += isSelected ? "[/]" : "";
+        return markup;
     }
 
+    private static void ToggleRoomSelection(List<Room> rooms, int selectedFloor, int selectedRoomIndex, HashSet<int> selectedRooms)
+    {
+        int roomNumber = selectedFloor * 100 + (selectedRoomIndex + 1);
+        var room = rooms.FirstOrDefault(r => r.RoomNumber == roomNumber);
 
+        if (room != null)
+        {
+            if (selectedRooms.Contains(room.RoomNumber))
+                selectedRooms.Remove(room.RoomNumber);
+            else
+                selectedRooms.Add(room.RoomNumber);
+        }
+    }
 }

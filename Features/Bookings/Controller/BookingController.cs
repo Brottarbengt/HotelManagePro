@@ -1,12 +1,10 @@
-﻿using HotelManagePro.Database;
-using HotelManagePro.Features.Bookings.Models;
+﻿using HotelManagePro.Features.Bookings.Models;
 using HotelManagePro.Features.Bookings.Services;
-using HotelManagePro.Features.Invoices.Models;
-using HotelManagePro.Features.Rooms.Models;
-using HotelManagePro.Utils;
 using HotelManagePro.Features.Customers.Models;
-using Spectre.Console;
+using HotelManagePro.Features.Rooms.Models;
 using HotelManagePro.Features.Rooms.Services;
+using HotelManagePro.Utils;
+using Spectre.Console;
 
 namespace HotelManagePro.Features.Bookings.Controller;
 
@@ -27,15 +25,17 @@ public class BookingController
 
     public void CreateNewBooking()
     {
-        
+
         //  New Booking -> Väljer Datum -> Visar lediga rum, väljer rum -> Ta Personuppgifter -> Bekräftar booking
         var arrivalDate = DatePicker.PickDate();
         var departureDate = DatePicker.PickDate();
 
         List<Room> availableRooms = _roomService.GetAvailableRooms(arrivalDate, departureDate);
 
-        var rooms = RoomPicker.PickRoom(availableRooms);
-                
+        var rooms = RoomPicker.PickRoom(availableRooms);        
+        // Need to ask if want to book more rooms? How dont show first
+
+
         //Is info correct? yes/No -> EditCustomer() or
         //ConfirmBooking() else: InputNewCustomer()
 
@@ -49,31 +49,29 @@ public class BookingController
             Rooms = rooms,
             Customer = cutomer
         };
-        
+
         // save to database
 
     }
     private string GetValidatedEmailInput()
+    {
+        while (true)
         {
-            while (true)
+            Console.Write("Ange e-postadress: ");
+            var email = Console.ReadLine()?.Trim();
+
+            if (CustomerValidator.IsValidEmail(email))
             {
-                Console.Write("Ange e-postadress: ");
-                var email = Console.ReadLine()?.Trim();
-
-                if (CustomerValidator.IsValidEmail(email))
-                {
-                    return email!;
-                }
-
-                Console.WriteLine("Ogiltig e-postadress. Försök igen.");
+                return email!;
             }
+
+            Console.WriteLine("Ogiltig e-postadress. Försök igen.");
         }
+    }
     public void SearchBookingByEmail()
     {
-        Console.WriteLine("::: SEARCH BY EMAIL :::");
-        Console.WriteLine("Enter customer Email: ");
-        // Call get email input method()
-        // call bookingService.FindActiveBookingByEmail(string customerEmail)
+        
+        
 
     }
 
@@ -84,16 +82,15 @@ public class BookingController
 
     public void RemoveBooking()
     {
-        // Needs to take input and find Booking, ?SearchByEmail()? then remove.
-        // Next TO DO ?
+        
     }
 
     public void EditBooking()
     {
-        
+
     }
 
-    
+
 
     public void DisplayBooking(Booking booking)
     {
