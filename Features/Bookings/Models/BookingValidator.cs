@@ -44,6 +44,22 @@ namespace HotelManagePro.Features.Bookings.Models
                 .WithMessage("One or more selected rooms are already booked for the chosen dates.");
         }
 
+        public static int GetValidBookingId(string input, List<Booking> bookings)
+        {
+            if (!int.TryParse(input, out int bookingId))
+            {
+                throw new ArgumentException("Invalid booking ID format. Please enter a numeric value.");
+            }
+
+            var booking = bookings.FirstOrDefault(b => b.BookingId == bookingId);
+            if (booking == null)
+            {
+                throw new KeyNotFoundException($"No booking found with ID: {bookingId}.");
+            }
+
+            return bookingId;
+        }
+
         private bool RoomsAreAvailable(List<Room> rooms, DateOnly arrivalDate, DateOnly departureDate)
         {
             // Replace with logic to check room availability.

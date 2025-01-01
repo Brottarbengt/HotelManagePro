@@ -35,7 +35,7 @@ namespace HotelManagePro.Features.Bookings.Services
 
         public void RemoveBooking(int bookingId)
         {
-            var booking = _dbContext.Bookings.FirstOrDefault(b => b.BookingsId == bookingId);
+            var booking = _dbContext.Bookings.FirstOrDefault(b => b.BookingId == bookingId);
             
             if (booking == null)
                 throw new ArgumentException($"Bokning med ID {bookingId} hittades inte.");

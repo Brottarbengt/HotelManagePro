@@ -8,7 +8,7 @@ namespace HotelManagePro.Features.Bookings.Models;
 public class Booking
 {
   
-    public int BookingsId { get; set; }
+    public int BookingId { get; set; }
     public required Invoice Invoice { get; set; }  // IsPaid can hämtas via Invoices
     public required DateOnly ArrivalDate { get; set; }
     public required DateOnly DepartureDate { get; set; }
