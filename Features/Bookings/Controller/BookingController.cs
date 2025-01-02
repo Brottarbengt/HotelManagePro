@@ -11,18 +11,16 @@ namespace HotelManagePro.Features.Bookings.Controller;
 public class BookingController
 {
     private readonly BookingService _bookingService;
+    private readonly RoomService _roomService;
 
-    public BookingController(BookingService bookingService)
+
+    public BookingController(BookingService bookingService, RoomService roomService)
     {
         _bookingService = bookingService;
-    }
-
-    private readonly RoomService _roomService;
-    public BookingController(RoomService roomService)
-    {
         _roomService = roomService;
     }
 
+    
     public void CreateNewBooking()
     {
 
