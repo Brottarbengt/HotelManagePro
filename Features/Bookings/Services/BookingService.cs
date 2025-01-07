@@ -31,7 +31,10 @@ namespace HotelManagePro.Features.Bookings.Services
             return bookings;
         }
 
-        
+        public void UpdateBooking()
+        {
+            throw new System.NotImplementedException();
+        }
 
         public void RemoveBooking(int bookingId)
         {

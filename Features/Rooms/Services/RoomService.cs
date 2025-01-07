@@ -21,7 +21,7 @@ namespace HotelManagePro.Features.Rooms.Services
         public List<Room> GetAllRooms()
         {
             return _dbContext.Rooms
-                             .Include(r => r.Booking) // included for sorting
+                             .Include(r => r.Booking) 
                              .ToList();
         }
 
@@ -34,6 +34,11 @@ namespace HotelManagePro.Features.Rooms.Services
                                          r.Booking.DepartureDate <= startDate ||
                                          r.Booking.ArrivalDate >= endDate))
                              .ToList();
+        }
+
+        public Room? GetRoomByNumber(int roomNumber)
+        {
+            return _dbContext.Rooms.FirstOrDefault(r => r.RoomNumber == roomNumber);
         }
 
     }

@@ -17,14 +17,42 @@ namespace HotelManagePro.Features.Rooms.Controller
         {
             _roomService = roomService;
         }
-        public List<Room> RoomPicker(DateOnly arrivalDate, DateOnly departureDate)
+
+        public void ShowAllRooms()
         {
-            //first Show available rooms
-
-
-            var room =
-            return room;
+            var rooms = _roomService.GetAllRooms();
+            foreach (var room in rooms)
+            {
+                Console.WriteLine($"Room {room.RoomNumber} - Type: {room.RoomType}");
+            }
         }
 
+        public void ShowAvailableRooms()
+        {
+            var availableRooms = _roomService.GetAvailableRooms(DateOnly.FromDateTime(DateTime.Now), DateOnly.FromDateTime(DateTime.Now));
+            foreach (var room in availableRooms)
+            {
+                Console.WriteLine($"Room {room.RoomNumber} - Type: {room.RoomType}");
+            }
+        }
+
+        public void ShowRoomDetails()
+        {
+            Console.Write("Enter room number: ");
+            if (int.TryParse(Console.ReadLine(), out int roomNumber))
+            {
+                var room = _roomService.GetRoomByNumber(roomNumber);
+                if (room != null)
+                {
+                    Console.WriteLine($"Room {room.RoomNumber}");
+                    Console.WriteLine($"Type: {room.RoomType}");
+                    Console.WriteLine($"Price: {room.Price:C}");
+                }
+                else
+                {
+                    Console.WriteLine("Room not found.");
+                }
+            }
+        }
     }
 }

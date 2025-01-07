@@ -1,54 +1,37 @@
-﻿using HotelManagePro.Utils.Menu;
+﻿using HotelManagePro.Features.Customers.Controller;
+using HotelManagePro.Utils.Menu;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Customers.Menus
+namespace HotelManagePro.Features.Customers.Menus;
+
+public class CustomerMenu : RootMenu
 {
-    public class CustomerMenu
+    private readonly CustomerController _customerController;
+    private readonly FindCustomerMenu _findCustomerMenu;
+    protected override string MenuTitle => "Customer Menu";
+
+    public CustomerMenu(
+        MenuNavigator menuNavigator,
+        CustomerController customerController,
+        FindCustomerMenu findCustomerMenu) 
+        : base(menuNavigator)
     {
-        private static string[] menuOptions = new string[] {
-            
-            "Search for Customer", // Undermeny med vad man vill söka på för Attrib? alt. söker igenom alla attribut på något som stämmer?
-            "Show All Customers",
-            "Remove Customers (soft Delete)",
-            "DELETE Customer, (WARNING! Hard Delete, only if asked to.)", // Ska ShowAllCustomers
-            "Edit Customer", // Ska ShowAllCustomers, Ska man kunna välja på samma sätt som menyn, dvs använda MenuGenerator?
-            "Back to Top Menu"
-        };
+        _customerController = customerController;
+        _findCustomerMenu = findCustomerMenu;
+    }
 
-        public static void ShowMenu()
+    protected override void InitializeMenuItems()
+    {
+        _menuItems.AddRange(new List<IMenuItem>
         {
-            MenuGenerator.ShowMenu("Customer Menu", menuOptions, ExecuteSelectedOption);
-        }
-
-        private static void ExecuteSelectedOption(int selectedIndex)
-        {
-            switch (selectedIndex)
-            {
-                case 0:
-                    ;
-                    break;
-                case 1:
-                    ;
-                    break;
-                case 2:
-                    ;
-                    break;
-                case 3:
-                    ;
-                    break;
-                case 4:
-                    ;
-                    break;
-                case 5:                    
-                    TopMenu.ShowMenu();
-                    break;
-                default:
-                    break;
-            }
-        }
+            new MenuItem("Find Customer", () => _findCustomerMenu.Show()),
+            new MenuItem("Create New Customer", () => _customerController.CreateNewCustomer()),
+            new MenuItem("Show All Customers", () => _customerController.ShowAllCustomers()),
+            new MenuItem("Back to Main Menu", () => _menuNavigator.NavigateToTopMenu())
+        });
     }
 }

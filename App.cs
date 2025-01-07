@@ -13,6 +13,9 @@ using HotelManagePro.Utils.Menu;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using HotelManagePro.Features.Customers.Menus;
+using HotelManagePro.Features.Rooms.Menus;
+using HotelManagePro.Features.Invoices.Menus;
 
 
 namespace HotelManagePro;
@@ -42,27 +45,24 @@ public class App
             .AddScoped<InvoiceService>()
             .AddScoped<RoomController>()
             .AddScoped<RoomService>()
+            .AddSingleton<MenuNavigator>()
+            .AddScoped<MainMenu>()
+            .AddScoped<BookingMenu>()
+            .AddScoped<CustomerMenu>()
+            .AddScoped<RoomMenu>()
+            .AddScoped<InvoiceMenu>()
+            .AddScoped<FindCustomerMenu>()
             .BuildServiceProvider();
 
 
         using (var scope = serviceProvider.CreateScope())
         {
-            var bookingService = scope.ServiceProvider.GetRequiredService<BookingService>();
-            var bookingController = scope.ServiceProvider.GetRequiredService<BookingController>();
+            var mainMenu = scope.ServiceProvider.GetRequiredService<MainMenu>();
+            var menuNavigator = scope.ServiceProvider.GetRequiredService<MenuNavigator>();
+            menuNavigator.SetTopMenu(mainMenu);
 
-            var customerService = scope.ServiceProvider.GetRequiredService<CustomerService>();
-            var customerController = scope.ServiceProvider.GetRequiredService<CustomerController>();
-
-            var roomService = scope.ServiceProvider.GetRequiredService<RoomService>();
-            var roomController = scope.ServiceProvider.GetRequiredService<RoomController>();
-
-            using (var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
-            {
-                DataInitializer.InitializeAndSeed(dbContext);
-            }            
+            mainMenu.Show();
         }
-
-        TopMenu.ShowMenu();
     }
 }
 /* 

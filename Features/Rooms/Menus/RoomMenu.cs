@@ -1,44 +1,32 @@
-﻿using HotelManagePro.Utils.Menu;
+﻿using HotelManagePro.Features.Rooms.Controller;
+using HotelManagePro.Utils.Menu;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Rooms.Menus
+namespace HotelManagePro.Features.Rooms.Menus;
+
+public class RoomMenu : RootMenu
 {
+    private readonly RoomController _roomController;
+    protected override string MenuTitle => "Room Menu";
 
-            
-
-    public static class RoomMenu
+    public RoomMenu(MenuNavigator menuNavigator, RoomController roomController) 
+        : base(menuNavigator)
     {
-        private static string[] menuOptions = new string[] {
-            "Manage rooms",
-            "Add room",
-            "Back to Top Menu"
-        };
-        public static void ShowMenu()
-        {
-            MenuGenerator.ShowMenu("Customer Menu", menuOptions, ExecuteSelectedOption);
-        }
+        _roomController = roomController;
+    }
 
-        private static void ExecuteSelectedOption(int selectedIndex)
+    protected override void InitializeMenuItems()
+    {
+        _menuItems.AddRange(new List<IMenuItem>
         {
-            switch (selectedIndex)
-            {
-                case 0:
-                    ;
-                    break;
-                case 1:
-                    ;
-                    break;
-                case 2:
-                    TopMenu.ShowMenu();
-                    break;
-                default:
-                    break;
-            }
-
-        }
+            new MenuItem("Show All Rooms", () => _roomController.ShowAllRooms()),
+            new MenuItem("Show Available Rooms", () => _roomController.ShowAvailableRooms()),
+            new MenuItem("Show Room Details", () => _roomController.ShowRoomDetails()),
+            new MenuItem("Back to Main Menu", () => _menuNavigator.NavigateToTopMenu())
+        });
     }
 }

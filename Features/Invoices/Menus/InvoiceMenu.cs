@@ -1,47 +1,32 @@
-﻿using HotelManagePro.Utils.Menu;
+﻿using HotelManagePro.Features.Invoices.Controller;
+using HotelManagePro.Utils.Menu;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Invoices.Menus
-{
-    public class SearchBookingMenu
-    {
-        private static string[] menuOptions = new string[] {
-            "Edit Invoice", // Shows all invoices first
-            "Show All Invoices", // Showing all bookings with invoice or just invoices?
-            "Edit Invoice", // Ska ShowAll() (en månad?) framöver ovan prompt
-            "Back to Top Menu"
-        };
-        public static void ShowMenu()
-        {
-            MenuGenerator.ShowMenu("Invoice Menu", menuOptions, ExecuteSelectedOption);
-        }
+namespace HotelManagePro.Features.Invoices.Menus;
 
-        private static void ExecuteSelectedOption(int selectedIndex)
+public class InvoiceMenu : RootMenu
+{
+    private readonly InvoiceController _invoiceController;
+    protected override string MenuTitle => "Invoice Menu";
+
+    public InvoiceMenu(MenuNavigator menuNavigator, InvoiceController invoiceController) 
+        : base(menuNavigator)
+    {
+        _invoiceController = invoiceController;
+    }
+
+    protected override void InitializeMenuItems()
+    {
+        _menuItems.AddRange(new List<IMenuItem>
         {
-            switch (selectedIndex)
-            {
-                case 0:
-                    ;
-                    break;
-                case 1:
-                    ;
-                    break;
-                case 2:
-                    ;
-                    break;
-                case 3:
-                    ;
-                    break;
-                case 4:
-                    TopMenu.ShowMenu();
-                    break;
-                default:
-                    break;
-            }
-        }
+            new MenuItem("Show All Invoices", () => _invoiceController.ShowAllInvoices()),
+            new MenuItem("Search Invoice", () => _invoiceController.SearchInvoice()),
+            new MenuItem("Mark Invoice as Paid", () => _invoiceController.MarkInvoiceAsPaid()),
+            new MenuItem("Back to Main Menu", () => _menuNavigator.NavigateToTopMenu())
+        });
     }
 }

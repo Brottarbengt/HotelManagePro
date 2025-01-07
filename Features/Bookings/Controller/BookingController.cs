@@ -5,6 +5,8 @@ using HotelManagePro.Features.Rooms.Models;
 using HotelManagePro.Features.Rooms.Services;
 using HotelManagePro.Utils;
 using Spectre.Console;
+using HotelManagePro.Features.Invoices.Services;
+using HotelManagePro.Features.Customers.Controller;
 
 namespace HotelManagePro.Features.Bookings.Controller;
 
@@ -12,12 +14,19 @@ public class BookingController
 {
     private readonly BookingService _bookingService;
     private readonly RoomService _roomService;
+    private readonly InvoiceService _invoiceService;
+    private readonly CustomerController _customerController;
 
-
-    public BookingController(BookingService bookingService, RoomService roomService)
+    public BookingController(
+        BookingService bookingService, 
+        RoomService roomService,
+        InvoiceService invoiceService,
+        CustomerController customerController)
     {
         _bookingService = bookingService;
         _roomService = roomService;
+        _invoiceService = invoiceService;
+        _customerController = customerController;
     }
 
     
@@ -29,14 +38,19 @@ public class BookingController
         var arrivalDate = DatePicker.PickDate();
         var departureDate = DatePicker.PickDate();
 
+        // Fråga om extra sängar
+
         List<Room> availableRooms = _roomService.GetAvailableRooms(arrivalDate, departureDate);
         var rooms = RoomPicker.PickRooms(availableRooms);        
         
+        var newInvoice = _invoiceService.CreateInvoice();
 
         //Is info correct? yes/No -> EditCustomer() or
         //ConfirmBooking() else: InputNewCustomer()
 
         //Var newInvoice = CreateInvoice(Rooms, arrivalDate, departureDate)
+
+        var customer = _customerController.GetOrCreateCustomer();
 
         var newBooking = new Booking
         {
@@ -44,52 +58,18 @@ public class BookingController
             DepartureDate = departureDate,
             Invoice = newInvoice,
             Rooms = rooms,
-            Customer = cutomer
+            Customer = customer
         };
 
         // save to database
 
     }
-    private string GetValidatedEmailInput()
+    
+    
+    public void EditBooking()
     {
-        while (true)
-        {
-            Console.Write("Ange e-postadress: ");
-            var email = Console.ReadLine()?.Trim();
 
-            if (CustomerValidator.IsValidEmail(email))
-            {
-                return email!;
-            }
-
-            Console.WriteLine("Ogiltig e-postadress. Försök igen.");
-        }
     }
-    public void SearchActiveBookingByEmail()
-    {
-        try
-        {
-            var email = GetValidatedEmailInput();
-            var bookings = _bookingService.FindActiveBookingByEmail(email);
-
-            if (!bookings.Any())
-            {
-                Console.WriteLine("No active bookings found for the provided email.");
-                return;
-            }
-
-            Console.WriteLine("Active bookings:");
-            foreach (var booking in bookings)
-            {
-                DisplayBooking(booking);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred: {ex.Message}");
-        }
-    }
-
     public void ShowAllBookings()
     {
         try
@@ -144,12 +124,46 @@ public class BookingController
             Console.WriteLine($"An unexpected error occurred: {ex.Message}");
         }
     }
-
-    public void EditBooking()
+    public void SearchActiveBookingByEmail()
     {
+        try
+        {
+            var email = GetValidatedEmailInput();
+            var bookings = _bookingService.FindActiveBookingByEmail(email);
 
+            if (!bookings.Any())
+            {
+                Console.WriteLine("No active bookings found for the provided email.");
+                return;
+            }
+
+            Console.WriteLine("Active bookings:");
+            foreach (var booking in bookings)
+            {
+                DisplayBooking(booking);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
     }
 
+    private string GetValidatedEmailInput()
+    {
+        while (true)
+        {
+            Console.Write("Ange e-postadress: ");
+            var email = Console.ReadLine()?.Trim();
+
+            if (CustomerValidator.IsValidEmail(email))
+            {
+                return email!;
+            }
+
+            Console.WriteLine("Ogiltig e-postadress. Försök igen.");
+        }
+    }
 
 
     public void DisplayBooking(Booking booking)

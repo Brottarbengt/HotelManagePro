@@ -6,52 +6,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HotelManagePro.Features.Customers.Menus
+namespace HotelManagePro.Features.Customers.Menus;
+
+public class FindCustomerMenu : RootMenu
 {
-    public static class FindCustomerMenu
+    private readonly CustomerController _customerController;
+    protected override string MenuTitle => "Find Customer";
+
+    public FindCustomerMenu(MenuNavigator menuNavigator, CustomerController customerController) 
+        : base(menuNavigator)
     {
-        private static string[] menuOptions = new string[] {
-        "Find by Customer ID",
-        "Find by Email",
-        "Find by Address",        
-        "New Customer",
-        "Back to Customer Menu"
-    };
+        _customerController = customerController;
+    }
 
-        private static CustomerController _customerController;
-
-        public static void SetCustomerController(CustomerController customerController)
+    protected override void InitializeMenuItems()
+    {
+        _menuItems.AddRange(new List<IMenuItem>
         {
-            _customerController = customerController;
-        }
-
-        public static void ShowMenu()
-        {
-            MenuGenerator.ShowMenu("Find Customer", menuOptions, ExecuteSelectedOption);
-        }
-
-        private static void ExecuteSelectedOption(int selectedIndex)
-        {
-            switch (selectedIndex)
-            {
-                case 0:
-                    _customerController.FindCustomerById();
-                    break;
-                case 1:
-                    _customerController.FindCustomerByEmail();
-                    break;
-                case 2:
-                    _customerController.FindCustomerByAddress();
-                    break;
-                case 3:
-                    // New Customer                            
-                    break;
-                case 4:
-                    // Back to Customer menu        
-                    break;
-                default:
-                    break;
-            }
-        }
+            new MenuItem("Find by Customer ID", () => _customerController.FindCustomerById()),
+            new MenuItem("Find by Email", () => _customerController.FindCustomerByEmail()),
+            new MenuItem("Find by Address", () => _customerController.FindCustomerByAddress()),
+            new MenuItem("New Customer", () => _customerController.CreateNewCustomer()),
+            new MenuItem("Back to Customer Menu", () => _menuNavigator.NavigateToTopMenu())
+        });
     }
 }

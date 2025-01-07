@@ -15,8 +15,8 @@ public class Customer
     public required string Email { get; set; }
     public required DateTime DateOfBirth { get; set; }
     public required string PhoneNumber { get; set; }
-    public List<Booking> Bookings { get; set; }        
+          
     public bool IsActive { get; set; }
-    public Address Address { get; set; }
+    public Address? Address { get; set; }
 
 }

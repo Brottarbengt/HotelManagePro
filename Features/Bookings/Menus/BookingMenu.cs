@@ -4,53 +4,28 @@ using HotelManagePro.Utils.Menu;
 
 namespace HotelManagePro.Features.Bookings.Menus;
 
-public static class BookingMenu
+public class BookingMenu : RootMenu
 {
-    private static string[] menuOptions = new string[] {
-        "New Booking",
-        "Search for Booking",  
-        "Show All Bookings", 
-        "Remove Booking",
-        "Edit Booking",
-        "Back to Top Menu"
-    };
+    private readonly BookingController _bookingController;
+    protected override string MenuTitle => "Booking Menu";
 
-    private static BookingController _bookingController;
-    public static void SetBookingService(BookingController bookingController)
+    public BookingMenu(MenuNavigator menuNavigator, BookingController bookingController) 
+        : base(menuNavigator)
     {
         _bookingController = bookingController;
     }
 
-    public static void ShowMenu()
+    protected override void InitializeMenuItems()
     {
-        MenuGenerator.ShowMenu("Bookings Menu", menuOptions, ExecuteSelectedOption);
-    }
-
-    private static void ExecuteSelectedOption(int selectedIndex)
-    {
-        switch (selectedIndex)
+        _menuItems.AddRange(new List<IMenuItem>
         {
-            case 0:
-                _bookingController.CreateNewBooking();
-                break;
-            case 1:
-                _bookingController.SearchBookingByEmail();
-                break;
-            case 2:
-                _bookingController.ShowAllBookings();
-                break;
-            case 3:
-                _bookingController.RemoveBooking();
-                break;
-            case 4:
-                _bookingController.EditBooking();
-                break;
-            case 5:
-                TopMenu.ShowMenu();
-                break;
-            default:
-                break;
-        }
+            new MenuItem("Create New Booking", () => _bookingController.CreateNewBooking()),
+            new MenuItem("Show All Bookings", () => _bookingController.ShowAllBookings()),
+            new MenuItem("Search Booking by Email", () => _bookingController.SearchActiveBookingByEmail()),
+            new MenuItem("Update Booking", () => _bookingController.EditBooking()),
+            new MenuItem("Delete Booking", () => _bookingController.RemoveBooking()),
+            new MenuItem("Back to Main Menu", () => _menuNavigator.NavigateToTopMenu())
+        });
     }
 }
 
