@@ -17,7 +17,13 @@ namespace HotelManagePro.Features.Bookings.Services
         
         public void CreateNewBooking(Booking newBooking)
         {
-            _dbContext.Add(newBooking);
+            _dbContext.Bookings.Add(newBooking);
+            _dbContext.SaveChanges();
+        }
+
+        public void UpdateBooking(Booking booking)
+        {
+            _dbContext.Bookings.Update(booking);
             _dbContext.SaveChanges();
         }
 
@@ -62,6 +68,8 @@ namespace HotelManagePro.Features.Bookings.Services
 
             return bookings;
         }
+
+        
     }
 }
 

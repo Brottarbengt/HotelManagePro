@@ -33,8 +33,8 @@ public class CustomerValidator : AbstractValidator<Customer>
            .Must(BeAtLeast18YearsOld).WithMessage("Customer must be at least 18 years old.");
 
         RuleFor(c => c.Address)
-            .SetValidator(new AddressValidator())
-            .When(c => c.Address != null);
+            .NotNull()
+            .SetValidator(new AddressValidator());
     }
     private bool BeAtLeast18YearsOld(DateOnly dateOfBirth)
     {
@@ -53,7 +53,14 @@ public class CustomerValidator : AbstractValidator<Customer>
             LastName = "Temp",
             Email = email ?? "",
             PhoneNumber = 0,
-            DateOfBirth = DateOnly.FromDateTime(DateTime.Now)
+            DateOfBirth = DateOnly.FromDateTime(DateTime.Now),
+            Address = new Address
+            {
+                StreetName = "Temp",
+                HouseNumber = "1",
+                PostalCode = "12345",
+                City = "TempCity"
+            }
         };
         var result = validator.Validate(customer);
         return result.IsValid;

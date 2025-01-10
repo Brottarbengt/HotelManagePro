@@ -19,18 +19,15 @@ public class InvoiceService
         _dbContext = dbContext;
     }
 
-    public Invoice CreateInvoice()
+    public Invoice CreateInvoice(double totalSum, int extraBeds)
     {
         var invoice = new Invoice
         {
-            TotalSum = 0,
-            IsPaid = false
+            TotalSum = totalSum,
+            IsPaid = false,
+            ExtraBeds = extraBeds
         };
         return invoice;
-    }
-    public double CalculateTotalSum(double price, int extraBeds)
-    {
-        return rooms.Sum(room => room.Price);
     }
 
     public List<Invoice> GetAllInvoices()
@@ -47,5 +44,15 @@ public class InvoiceService
             .Include(i => i.Booking)
                 .ThenInclude(b => b.Customer)
             .FirstOrDefault(i => i.InvoiceId == id);
+    }
+
+    public bool MarkAsPaid(int invoiceId)
+    {
+        var invoice = _dbContext.Invoices.Find(invoiceId);
+        if (invoice == null) return false;
+
+        invoice.IsPaid = true;
+        _dbContext.SaveChanges();
+        return true;
     }
 }

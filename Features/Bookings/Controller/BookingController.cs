@@ -32,41 +32,47 @@ public class BookingController
     
     public void CreateNewBooking()
     {
-
-        //  New Booking -> Väljer Datum -> Visar lediga rum, väljer rum -> Ta Personuppgifter -> Bekräftar booking
-        
         var arrivalDate = DatePicker.PickDate();
         var departureDate = DatePicker.PickDate();
-
-        // Fråga om extra sängar
+        var numberOfGuests = GetNumberOfGuests();
 
         List<Room> availableRooms = _roomService.GetAvailableRooms(arrivalDate, departureDate);
-        var rooms = RoomPicker.PickRooms(availableRooms);        
+        var selectedRooms = RoomPicker.PickRooms(availableRooms);
         
-        var newInvoice = _invoiceService.CreateInvoice();
+        if (!selectedRooms.Any())
+        {
+            Console.WriteLine("No rooms selected. Booking cancelled.");
+            return;
+        }
 
-        //Is info correct? yes/No -> EditCustomer() or
-        //ConfirmBooking() else: InputNewCustomer()
-
-        //Var newInvoice = CreateInvoice(Rooms, arrivalDate, departureDate)
-
+        var extraBeds = GetNumberOfExtraBeds(numberOfGuests, selectedRooms);
+        
         var customer = _customerController.CreateNewCustomer();
+
+        var basePrice = selectedRooms.Sum(r => r.Price);
+        var guestPrice = numberOfGuests * 100;
+        var extraBedPrice = extraBeds * 150;
+        var totalPrice = basePrice + guestPrice + extraBedPrice;
+
+        var newInvoice = _invoiceService.CreateInvoice(totalPrice, extraBeds);
 
         var newBooking = new Booking
         {
             ArrivalDate = arrivalDate,
             DepartureDate = departureDate,
+            NumberOfGuests = numberOfGuests,
             Invoice = newInvoice,
-            Rooms = rooms,
+            Rooms = selectedRooms,
             Customer = customer
         };
 
-        // save to database
-
+        _bookingService.CreateNewBooking(newBooking);
+        Console.WriteLine($"\nBooking created successfully!");
+        DisplayBooking(newBooking);
     }
     
     
-    public void EditBooking()
+    public void UpdateBooking()
     {
 
     }
@@ -176,5 +182,53 @@ public class BookingController
         Console.WriteLine($"Is Paid: {booking.Invoice?.IsPaid ?? false}");
         Console.WriteLine($"Total Cost: {booking.Invoice?.TotalSum ?? 0}");
         Console.WriteLine(new string('-', 40));
+    }
+
+    private int GetNumberOfGuests()
+    {
+        while (true)
+        {
+            Console.Write("Enter number of guests (maximum 6): ");
+            if (int.TryParse(Console.ReadLine(), out int numberOfGuests))
+            {
+                if (numberOfGuests <= 0)
+                {
+                    Console.WriteLine("Number of guests must be at least 1.");
+                    continue;
+                }
+                
+                if (numberOfGuests > 6)
+                {
+                    Console.WriteLine("Maximum 6 guests per booking. Please make separate bookings for larger groups.");
+                    continue;
+                }
+                
+                return numberOfGuests;
+            }
+            Console.WriteLine("Invalid input. Please enter a number.");
+        }
+    }
+
+    private int GetNumberOfExtraBeds(int numberOfGuests, List<Room> selectedRooms)
+    {
+        var standardBeds = selectedRooms.Sum(r => r.RoomType == TypeOfRoom.Single ? 1 : 2);
+        var maxExtraBeds = selectedRooms.Count * 1; // 1 extra bed per room maximum
+        var neededExtraBeds = Math.Max(0, numberOfGuests - standardBeds);
+
+        if (neededExtraBeds == 0)
+            return 0;
+
+        if (neededExtraBeds > maxExtraBeds)
+        {
+            Console.WriteLine($"Warning: Not enough beds for {numberOfGuests} guests.");
+            Console.WriteLine($"Standard beds: {standardBeds}, Maximum extra beds possible: {maxExtraBeds}");
+            Console.WriteLine("Please select more rooms or reduce number of guests.");
+            return 0;
+        }
+
+        Console.WriteLine($"\nYou need {neededExtraBeds} extra bed(s) for {numberOfGuests} guests.");
+        Console.Write("Would you like to add extra beds? (y/n): ");
+        
+        return Console.ReadLine()?.Trim().ToLower() == "y" ? neededExtraBeds : 0;
     }
 }

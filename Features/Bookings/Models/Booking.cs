@@ -14,5 +14,6 @@ public class Booking
     public required DateOnly DepartureDate { get; set; }
     public required List<Room> Rooms { get; set; }
     public required Customer Customer { get; set; }
+    public int NumberOfGuests { get; set; }
    
 }
