@@ -10,7 +10,7 @@ namespace HotelManagePro.Features.Rooms.Models
     }
     public class Room
     {
-        public int RoomsId { get; set; }        
+        public int RoomId { get; set; }        
         public required int RoomNumber { get; set; }
         public required TypeOfRoom RoomType { get; set; }
         public required int Size { get; set; }

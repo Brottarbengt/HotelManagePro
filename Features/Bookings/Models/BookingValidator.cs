@@ -23,12 +23,12 @@ namespace HotelManagePro.Features.Bookings.Models
                 .GreaterThan(b => b.ArrivalDate)
                 .WithMessage("Departure date must be after the arrival date.");
 
-            // Invoice validation
+            // Invoices validation
             RuleFor(b => b.Invoice)
                 .NotNull().WithMessage("Invoice is required.")
                 .SetValidator(new InvoiceValidator());
 
-            // Customer validation
+            // Customers validation
             RuleFor(b => b.Customer)
                 .NotNull().WithMessage("Customer information is required.")
                 .SetValidator(new CustomerValidator());
@@ -39,9 +39,7 @@ namespace HotelManagePro.Features.Bookings.Models
                 .Must(rooms => rooms.All(r => r.IsActive))
                 .WithMessage("All selected rooms must be active.");
 
-            RuleFor(b => b.Rooms)
-                .Must((booking, rooms) => RoomsAreAvailable(rooms, booking.ArrivalDate, booking.DepartureDate))
-                .WithMessage("One or more selected rooms are already booked for the chosen dates.");
+            
         }
 
         public static int GetValidBookingId(string? input, List<Booking>? bookings)
@@ -61,11 +59,6 @@ namespace HotelManagePro.Features.Bookings.Models
             return bookingId;
         }
 
-        private bool RoomsAreAvailable(List<Room> rooms, DateOnly arrivalDate, DateOnly departureDate)
-        {
-            // Replace with logic to check room availability.
-            
-            return true;
-        }
+        
     }
 }

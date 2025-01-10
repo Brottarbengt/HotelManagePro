@@ -14,12 +14,12 @@ public static class DataInitializer
     {
         dbContext.Database.Migrate();
 
-        if (!dbContext.Room.Any())
+        if (!dbContext.Rooms.Any())
         {
             SeedRooms(dbContext);
         }
 
-        if (!dbContext.Customer.Any())
+        if (!dbContext.Customers.Any())
         {
             SeedCustomers(dbContext);
         }
@@ -48,7 +48,7 @@ public static class DataInitializer
             }
         }
 
-        dbContext.Room.AddRange(rooms);
+        dbContext.Rooms.AddRange(rooms);
         dbContext.SaveChanges();
     }
 
@@ -72,7 +72,7 @@ public static class DataInitializer
             })
             .Generate(20);
 
-        dbContext.Customer.AddRange(customers);
+        dbContext.Customers.AddRange(customers);
         dbContext.SaveChanges();
     }
 }
