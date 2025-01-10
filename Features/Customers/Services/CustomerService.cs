@@ -30,7 +30,7 @@ public class CustomerService
     {
         return _dbContext.Customers
             .Include(c => c.Address)
-            .FirstOrDefault(c => c.CustomersId == id);
+            .FirstOrDefault(c => c.CustomerId == id);
     }
 
     public Customer? GetCustomerByEmail(string? email)

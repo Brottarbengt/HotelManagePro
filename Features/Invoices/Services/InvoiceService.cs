@@ -32,17 +32,12 @@ public class InvoiceService
 
     public List<Invoice> GetAllInvoices()
     {
-        return _dbContext.Invoices
-            .Include(i => i.Booking)
-                .ThenInclude(b => b.Customer)
-            .ToList();
+        return _dbContext.Invoices.ToList();
     }
 
     public Invoice? GetInvoiceById(int id)
     {
         return _dbContext.Invoices
-            .Include(i => i.Booking)
-                .ThenInclude(b => b.Customer)
             .FirstOrDefault(i => i.InvoiceId == id);
     }
 

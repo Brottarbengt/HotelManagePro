@@ -33,6 +33,11 @@ public class App
         var connectionString = config.GetConnectionString("DefaultConnection");
         options.UseSqlServer(connectionString);
 
+        using (var dbContext = new ApplicationDbContext(options.Options))
+	    {
+	        dbContext.Database.Migrate();
+	    }
+
         
         var serviceProvider = new ServiceCollection()
             .AddSingleton(config) 
@@ -65,44 +70,8 @@ public class App
         }
     }
 }
-/* 
-
-
-         * TODO
-
-         * FluentValidation ska implementeras.
-         * Gogus ska implementeras
-         * Bygga en CenterAll() för bättre UX?
+        /* 
          
-         
-         * Bygga DTOs efter behov
-         * 
-         * 
-         * New Booking -> Väljer Datum -> Visar lediga rum, väljer rum -> Ta Personuppgifter -> Bekräftar booking
-
-
-        ===============  BOOKING  ====================
-            - Vilka Props/Attributer behövs OCH vilka ska kunna vara NULL!?
-            - Om man gör en ny booking OCH har ny kund, ska man kunna adda ny kund direkt? en prompt innan man 
-              startar ny booking som frågar 'Ny Kund?' Ja = -> newCustomer, Nej = -> ShowAllCustomer() följt av NewBoooking()
-
-
-
-        ===============  ROOMS  ====================
-            - Vilka Props/Attributer behövs OCH vilka ska kunna vara NULL!?
-            - 
-
-
-        ===============  CUSTOMER  ====================
-            - Vilka Props/Attributer behövs OCH vilka ska kunna vara NULL!?
-
-
-        ===============  INVOICE  ====================
-            - Vilka Props/Attributer behövs OCH vilka ska kunna vara NULL!?
-
-
-
-
          This Hotel:
 
          A three-story hotel with ten rooms each level.
@@ -111,7 +80,5 @@ public class App
          RoomNumbers start with level followed by roomnumber.
          Ex. Room 010 is the tenth room on ground floor hence a double.
              Room 106 is the sixth room on second floor hence a single.
-
-
 
         */

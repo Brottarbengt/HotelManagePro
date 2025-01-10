@@ -167,7 +167,7 @@ public class CustomerController
 
     private void DisplayCustomer(Customer customer)
     {
-        Console.WriteLine($"ID: {customer.CustomersId}");
+        Console.WriteLine($"ID: {customer.CustomerId}");
         Console.WriteLine($"Name: {customer.FirstName} {customer.LastName}");
         Console.WriteLine($"Email: {customer.Email}");
         Console.WriteLine($"Phone: {customer.PhoneNumber}");

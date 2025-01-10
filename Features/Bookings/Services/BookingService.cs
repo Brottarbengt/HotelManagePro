@@ -1,4 +1,4 @@
-﻿using HotelManagePro.Database;
+using HotelManagePro.Database;
 using HotelManagePro.Features.Bookings.Models;
 using HotelManagePro.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -69,7 +69,13 @@ namespace HotelManagePro.Features.Bookings.Services
             return bookings;
         }
 
-        
+        public Booking? GetBookingById(int id)
+        {
+            return _dbContext.Bookings
+                .Include(b => b.Customer)
+                .Include(b => b.Rooms)
+                .FirstOrDefault(b => b.BookingId == id);
+        }
     }
 }
 

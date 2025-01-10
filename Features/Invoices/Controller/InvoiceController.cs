@@ -6,16 +6,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HotelManagePro.Features.Invoices.Models;
+using HotelManagePro.Features.Bookings.Services;
 
 namespace HotelManagePro.Features.Invoices.Controller;
 
 public class InvoiceController
 {
     private readonly InvoiceService _invoiceService;
+    private readonly BookingService _bookingService;
 
-    public InvoiceController(InvoiceService invoiceService)
+    public InvoiceController(
+        InvoiceService invoiceService,
+        BookingService bookingService)
     {
         _invoiceService = invoiceService;
+        _bookingService = bookingService;
     }
 
     public void ShowAllInvoices()
@@ -65,13 +70,18 @@ public class InvoiceController
         Console.WriteLine($"Invoice ID: {invoice.InvoiceId}");
         Console.WriteLine($"Total Sum: {invoice.TotalSum:C}");
         Console.WriteLine($"Status: {(invoice.IsPaid ? "Paid" : "Unpaid")}");
+        Console.WriteLine($"Extra Beds: {invoice.ExtraBeds}");
         
-        if (invoice.Booking != null)
+        var booking = _bookingService.GetBookingById(invoice.BookingId);
+        if (booking != null)
         {
-            Console.WriteLine($"Customer ID: {invoice.Booking.Customer.CustomersId}");
-            Console.WriteLine($"Customer Email: {invoice.Booking.Customer.Email}");
-            Console.WriteLine($"Arrival Date: {invoice.Booking.ArrivalDate:d}");
-            Console.WriteLine($"Departure Date: {invoice.Booking.DepartureDate:d}");
+            Console.WriteLine($"\nBooking Details:");
+            Console.WriteLine($"Customer: {booking.Customer.FirstName} {booking.Customer.LastName}");
+            Console.WriteLine($"Customer Email: {booking.Customer.Email}");
+            Console.WriteLine($"Arrival Date: {booking.ArrivalDate:d}");
+            Console.WriteLine($"Departure Date: {booking.DepartureDate:d}");
+            Console.WriteLine($"Number of Guests: {booking.NumberOfGuests}");
+            Console.WriteLine($"Rooms: {string.Join(", ", booking.Rooms.Select(r => r.RoomNumber))}");
         }
         
         Console.WriteLine(new string('-', 40));

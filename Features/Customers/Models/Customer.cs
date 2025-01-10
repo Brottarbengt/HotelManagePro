@@ -9,7 +9,7 @@ namespace HotelManagePro.Features.Customers.Models;
 
 public class Customer
 {
-    public int CustomersId { get; set; }
+    public int CustomerId { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string Email { get; set; }

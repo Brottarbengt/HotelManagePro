@@ -17,28 +17,5 @@ namespace HotelManagePro.Features.Rooms.Models
         public required bool IsActive { get; set; }
         public required double Price { get; set; }
 
-        public static Room CreateSingleRoom(int roomNumber){
-            return new Room
-            {
-                RoomNumber = roomNumber,
-                RoomType = TypeOfRoom.Single,
-                Size = 10,
-                IsActive = true,
-                Price = 650   
-
-            };
-        }
-
-        public static Room CreateDoubleRoom(int roomNumber){
-            return new Room
-            {
-                RoomNumber = roomNumber,
-                RoomType = TypeOfRoom.Double,
-                Size = 20,
-                IsActive = true,
-                Price = 1200
-            };
-        }
-    }
-    
+    }    
 }

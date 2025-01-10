@@ -1,98 +1,78 @@
-﻿using HotelManagePro.Database;
+﻿using Bogus;
+using HotelManagePro.Database;
 using HotelManagePro.Features.Bookings.Models;
 using HotelManagePro.Features.Customers.Models;
 using HotelManagePro.Features.Invoices.Models;
 using HotelManagePro.Features.Rooms.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace HotelManagePro.Utils
+namespace HotelManagePro.Database;
+
+public static class DataInitializer
 {
-    public static class DataInitializer
+    public static void InitializeAndSeed(ApplicationDbContext dbContext)
     {
-        public static void InitializeAndSeed(ApplicationDbContext dbContext)
+        dbContext.Database.Migrate();
+
+        if (!dbContext.Room.Any())
         {
-
-            dbContext.Database.Migrate();
-
-            //   SEEDING
-
-            // ROOMS
-            if (!dbContext.Rooms.Any())
-            {
-                var rooms = new List<Room>();
-
-                for (int floor = 0; floor < 3; floor++)
-                {
-                    for (int room = 1; room <= 10; room++)
-                    {
-                        var roomNumber = int.Parse($"{floor}{room:D2}");
-                        var roomType = room <= 6 ? TypeOfRoom.Single : TypeOfRoom.Double;
-                        rooms.Add(new Room
-                        {
-                            RoomNumber = roomNumber,
-                            RoomType = roomType,
-                            Size = roomType == TypeOfRoom.Single ? 12 : 22,
-                            IsActive = true,
-                            Price = roomType == TypeOfRoom.Single ? 650 : 1200
-                        });
-                    }
-                }
-
-                dbContext.Rooms.AddRange(rooms);
-            }
-
-            // CUSTOMERS
-            if (!dbContext.Customers.Any())
-            {
-                dbContext.Customers.AddRange(new List<Customer>
-                {
-                    new Customer
-                    {
-                        FirstName = "Karl",
-                        LastName = "Westergren",
-                        Email = "Karlw@tjohoo.com",
-                        PhoneNumber = 0730263294,
-                        DateOfBirth = new DateOnly(1984, 11, 09),
-                        IsActive = true,
-                        Address = new Address
-                        {
-                            StreetName = "Moravägen",
-                            HouseNumber = "6",
-                            PostalCode = "821 41",
-                            City = "Bollnäs"
-                        }
-                    },
-                    new Customer
-                    {
-                        FirstName = "Arnold",
-                        LastName = "Swartznegger",
-                        Email = "t1000@skynet.com",
-                        PhoneNumber = 027816176,
-                        DateOfBirth = new DateOnly(1990, 1, 1),
-                        IsActive = true,
-                        Address = new Address
-                        {
-                            StreetName = "Skystreet",
-                            HouseNumber = "1",
-                            PostalCode = "101 sky",
-                            City = "Washington"
-                        }
-                    }
-                });
-            }
-            dbContext.SaveChanges();
-
-            // INVOICES
-            if (!dbContext.Invoices.Any())
-            {
-                dbContext.Invoices.Add(new Invoice
-                {
-                    TotalSum = 0,
-                    IsPaid = false
-                });
-            }
-                        
-            dbContext.SaveChanges();
+            SeedRooms(dbContext);
         }
+
+        if (!dbContext.Customer.Any())
+        {
+            SeedCustomers(dbContext);
+        }
+    }
+
+    private static void SeedRooms(ApplicationDbContext dbContext)
+    {
+        var rooms = new List<Room>();
+
+        // 3 våningar (0-2), 10 rum per våning
+        for (int floor = 0; floor <= 2; floor++)
+        {
+            for (int roomNum = 1; roomNum <= 10; roomNum++)
+            {
+                var roomNumber = (floor * 100) + roomNum;
+                var roomType = roomNum <= 6 ? TypeOfRoom.Single : TypeOfRoom.Double;
+                
+                rooms.Add(new Room
+                {
+                    RoomNumber = roomNumber,
+                    RoomType = roomType,
+                    Size = roomType == TypeOfRoom.Single ? 12 : 22,
+                    IsActive = true,
+                    Price = roomType == TypeOfRoom.Single ? 650 : 1200
+                });
+            }
+        }
+
+        dbContext.Room.AddRange(rooms);
+        dbContext.SaveChanges();
+    }
+
+    private static void SeedCustomers(ApplicationDbContext dbContext)
+    {
+        var faker = new Faker("sv");
+        
+        var customers = new Faker<Customer>("sv")
+            .RuleFor(c => c.FirstName, f => f.Name.FirstName())
+            .RuleFor(c => c.LastName, f => f.Name.LastName())
+            .RuleFor(c => c.Email, (f, c) => f.Internet.Email(c.FirstName, c.LastName))
+            .RuleFor(c => c.PhoneNumber, f => int.Parse("0" + f.Random.Number(700000000, 799999999).ToString()))
+            .RuleFor(c => c.DateOfBirth, f => DateOnly.FromDateTime(f.Date.Past(50, DateTime.Now.AddYears(-18))))
+            .RuleFor(c => c.IsActive, f => true)
+            .RuleFor(c => c.Address, f => new Address
+            {
+                StreetName = f.Address.StreetName(),
+                HouseNumber = f.Random.Number(1, 100).ToString(),
+                PostalCode = f.Address.ZipCode(),
+                City = f.Address.City()
+            })
+            .Generate(20);
+
+        dbContext.Customer.AddRange(customers);
+        dbContext.SaveChanges();
     }
 }
