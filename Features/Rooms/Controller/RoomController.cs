@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HotelManagePro.Utils;
 
 namespace HotelManagePro.Features.Rooms.Controller
 {
@@ -52,6 +53,28 @@ namespace HotelManagePro.Features.Rooms.Controller
                 {
                     Console.WriteLine("Room not found.");
                 }
+            }
+        }
+
+        public void EditRoomDetails()
+        {
+            var rooms = _roomService.GetAllRooms();
+            var selectedRooms = RoomPicker.PickRooms(rooms);
+            
+            if (!selectedRooms.Any())
+            {
+                Console.WriteLine("No rooms selected.");
+                return;
+            }
+
+            foreach (var room in selectedRooms)
+            {
+                Console.WriteLine($"\nEditing Room {room.RoomNumber}");
+                Console.WriteLine($"Current details:");
+                Console.WriteLine($"Type: {room.RoomType}");
+                Console.WriteLine($"Size: {room.Size} m²");
+                Console.WriteLine($"Price: {room.Price:C}");
+                Console.WriteLine($"Status: {(room.IsActive ? "Active" : "Inactive")}");
             }
         }
     }

@@ -10,11 +10,10 @@ namespace HotelManagePro.Features.Invoices.Models
 {
     public class Invoice
     {
-        public int InvoicesId { get; set; }
-        public required int TotalSum { get; set; }
-        public required bool IsPaid { get; set; }
+        public int InvoiceId { get; set; }
+        public required double TotalSum { get; set; }
+        public required bool IsPaid { get; set; } = false;
         public int ExtraBeds { get; set; }
-        public Booking Booking { get; set; }
-
+        public Booking? Booking { get; set; }
     }
 }

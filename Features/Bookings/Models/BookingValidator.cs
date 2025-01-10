@@ -44,18 +44,19 @@ namespace HotelManagePro.Features.Bookings.Models
                 .WithMessage("One or more selected rooms are already booked for the chosen dates.");
         }
 
-        public static int GetValidBookingId(string input, List<Booking> bookings)
+        public static int GetValidBookingId(string? input, List<Booking>? bookings)
         {
-            if (!int.TryParse(input, out int bookingId))
-            {
-                throw new ArgumentException("Invalid booking ID format. Please enter a numeric value.");
-            }
+            if (string.IsNullOrEmpty(input))
+                throw new ArgumentException("Booking ID cannot be empty.");
+        
+            if (bookings == null || !bookings.Any())
+                throw new ArgumentException("No bookings available.");
 
-            var booking = bookings.FirstOrDefault(b => b.BookingId == bookingId);
-            if (booking == null)
-            {
-                throw new KeyNotFoundException($"No booking found with ID: {bookingId}.");
-            }
+            if (!int.TryParse(input, out int bookingId))
+                throw new ArgumentException("Invalid booking ID format.");
+
+            if (!bookings.Any(b => b.BookingId == bookingId))
+                throw new ArgumentException($"No booking found with ID {bookingId}.");
 
             return bookingId;
         }

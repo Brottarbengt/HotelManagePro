@@ -26,13 +26,14 @@ namespace HotelManagePro.Utils
                     for (int room = 1; room <= 10; room++)
                     {
                         var roomNumber = int.Parse($"{floor}{room:D2}");
+                        var roomType = room <= 6 ? TypeOfRoom.Single : TypeOfRoom.Double;
                         rooms.Add(new Room
                         {
                             RoomNumber = roomNumber,
-                            RoomType = room <= 6 ? TypeOfRoom.Single : TypeOfRoom.Double,
-                            Size = room <= 6 ? 12 : 22, // Example sizes
+                            RoomType = roomType,
+                            Size = roomType == TypeOfRoom.Single ? 12 : 22,
                             IsActive = true,
-                            ExtraBeds = room <= 6 ? 0 : (room <= 9 ? 1 : 2) // Logic for extra beds
+                            Price = roomType == TypeOfRoom.Single ? 650 : 1200
                         });
                     }
                 }
@@ -51,9 +52,15 @@ namespace HotelManagePro.Utils
                         LastName = "Westergren",
                         Email = "Karlw@tjohoo.com",
                         PhoneNumber = 0730263294,
-                        Address = "821 41 Bollnäs",
+                        DateOfBirth = new DateOnly(1984, 11, 09),
                         IsActive = true,
-                        Bookings = new List<Booking>()
+                        Address = new Address
+                        {
+                            StreetName = "Moravägen",
+                            HouseNumber = "6",
+                            PostalCode = "821 41",
+                            City = "Bollnäs"
+                        }
                     },
                     new Customer
                     {
@@ -61,9 +68,15 @@ namespace HotelManagePro.Utils
                         LastName = "Swartznegger",
                         Email = "t1000@skynet.com",
                         PhoneNumber = 027816176,
-                        Address = "456 Elm St, Townsville",
+                        DateOfBirth = new DateOnly(1990, 1, 1),
                         IsActive = true,
-                        Bookings = new List<Booking>()
+                        Address = new Address
+                        {
+                            StreetName = "Skystreet",
+                            HouseNumber = "1",
+                            PostalCode = "101 sky",
+                            City = "Washington"
+                        }
                     }
                 });
             }

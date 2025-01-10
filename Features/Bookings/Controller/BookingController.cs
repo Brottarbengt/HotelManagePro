@@ -50,7 +50,7 @@ public class BookingController
 
         //Var newInvoice = CreateInvoice(Rooms, arrivalDate, departureDate)
 
-        var customer = _customerController.GetOrCreateCustomer();
+        var customer = _customerController.CreateNewCustomer();
 
         var newBooking = new Booking
         {
@@ -106,7 +106,7 @@ public class BookingController
                 try
                 {
                     Console.WriteLine("Enter the ID of the booking to remove:");
-                    string input = Console.ReadLine();
+                    string? input = Console.ReadLine();
                     bookingId = BookingValidator.GetValidBookingId(input, bookings);
                     break; 
                 }

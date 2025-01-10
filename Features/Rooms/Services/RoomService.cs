@@ -20,20 +20,19 @@ namespace HotelManagePro.Features.Rooms.Services
 
         public List<Room> GetAllRooms()
         {
-            return _dbContext.Rooms
-                             .Include(r => r.Booking) 
-                             .ToList();
+            return _dbContext.Rooms.ToList();
         }
 
         
         public List<Room> GetAvailableRooms(DateOnly startDate, DateOnly endDate)
         {
             return _dbContext.Rooms
-                             .Where(r => r.IsActive &&
-                                        (r.Booking == null ||
-                                         r.Booking.DepartureDate <= startDate ||
-                                         r.Booking.ArrivalDate >= endDate))
-                             .ToList();
+                .Where(r => r.IsActive)
+                .Where(r => !_dbContext.Bookings
+                    .Any(b => b.Rooms.Contains(r) && 
+                             !(b.DepartureDate <= startDate || 
+                               b.ArrivalDate >= endDate)))
+                .ToList();
         }
 
         public Room? GetRoomByNumber(int roomNumber)

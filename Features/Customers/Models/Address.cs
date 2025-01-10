@@ -13,5 +13,5 @@ public class Address
     public required string HouseNumber { get; set; }
     public required string City { get; set; }
     public required string PostalCode { get; set; } // Type String for scaling for implementation in foreign countries
-    public Customer Customer { get; set; }
+    
 }
