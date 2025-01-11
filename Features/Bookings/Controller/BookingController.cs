@@ -48,6 +48,11 @@ public class BookingController
         var extraBeds = GetNumberOfExtraBeds(numberOfGuests, selectedRooms);
         
         var customer = _customerController.CreateNewCustomer();
+        if (customer == null)
+        {
+            Console.WriteLine("Customer creation cancelled. Booking cancelled.");
+            return;
+        }
 
         var basePrice = selectedRooms.Sum(r => r.Price);
         var guestPrice = numberOfGuests * 100;
@@ -132,45 +137,41 @@ public class BookingController
     }
     public void SearchActiveBookingByEmail()
     {
-        try
-        {
-            var email = GetValidatedEmailInput();
-            var bookings = _bookingService.FindActiveBookingByEmail(email);
-
-            if (!bookings.Any())
-            {
-                Console.WriteLine("No active bookings found for the provided email.");
-                return;
-            }
-
-            Console.WriteLine("Active bookings:");
-            foreach (var booking in bookings)
-            {
-                DisplayBooking(booking);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred: {ex.Message}");
-        }
-    }
-
-    private string GetValidatedEmailInput()
-    {
         while (true)
         {
-            Console.Write("Ange e-postadress: ");
-            var email = Console.ReadLine()?.Trim();
+            Console.WriteLine("\nPress ESC to return to menu or search for bookings:");
+            
+            while (Console.KeyAvailable) Console.ReadKey(true);
+            
+            var key = Console.ReadKey(true);
+            if (key.Key == ConsoleKey.Escape)
+                return;
 
-            if (CustomerValidator.IsValidEmail(email))
+            try
             {
-                return email!;
-            }
+                var email = CustomerValidator.GetValidatedEmail();
+                if (email == null) continue;
 
-            Console.WriteLine("Ogiltig e-postadress. Försök igen.");
+                var bookings = _bookingService.FindActiveBookingByEmail(email);
+
+                if (!bookings.Any())
+                {
+                    Console.WriteLine("No active bookings found for the provided email.");
+                    continue;
+                }
+
+                Console.WriteLine("Active bookings:");
+                foreach (var booking in bookings)
+                {
+                    DisplayBooking(booking);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
         }
     }
-
 
     public void DisplayBooking(Booking booking)
     {

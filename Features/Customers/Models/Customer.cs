@@ -17,6 +17,6 @@ public class Customer
     public required int PhoneNumber { get; set; }
           
     public bool IsActive { get; set; }
-    public required Address Address { get; set; }
+    public Address? Address { get; set; }
 
 }

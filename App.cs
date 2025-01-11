@@ -36,6 +36,7 @@ public class App
         using (var dbContext = new ApplicationDbContext(options.Options))
 	    {
 	        dbContext.Database.Migrate();
+	        DataInitializer.InitializeAndSeed(dbContext);
 	    }
 
         

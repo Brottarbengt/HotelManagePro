@@ -33,8 +33,8 @@ public class CustomerValidator : AbstractValidator<Customer>
            .Must(BeAtLeast18YearsOld).WithMessage("Customer must be at least 18 years old.");
 
         RuleFor(c => c.Address)
-            .NotNull()
-            .SetValidator(new AddressValidator());
+            .SetValidator(new AddressValidator()!)
+            .When(c => c.Address != null);
     }
     private bool BeAtLeast18YearsOld(DateOnly dateOfBirth)
     {
@@ -98,5 +98,56 @@ public class CustomerValidator : AbstractValidator<Customer>
     public static bool IsValidAddress(string? streetName, string? houseNumber, string? postalCode, string? city)
     {
         return AddressValidator.ValidateAddress(streetName, houseNumber, postalCode, city);
+    }
+
+    public static string? GetValidatedEmail()
+    {
+        while (true)
+        {
+            Console.Write("Enter email: ");
+            var email = Console.ReadLine()?.Trim();
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                Console.WriteLine("Email cannot be empty. Please try again.");
+                continue;
+            }
+
+            if (!email.Contains('@'))
+            {
+                Console.WriteLine("Email must contain '@'. Please try again.");
+                continue;
+            }
+
+            var parts = email.Split('@');
+            if (parts.Length != 2)
+            {
+                Console.WriteLine("Invalid email format. Please try again.");
+                continue;
+            }
+
+            var localPart = parts[0];
+            var domainPart = parts[1];
+
+            if (string.IsNullOrWhiteSpace(localPart) || string.IsNullOrWhiteSpace(domainPart))
+            {
+                Console.WriteLine("Invalid email format. Please try again.");
+                continue;
+            }
+
+            if (!domainPart.Contains('.'))
+            {
+                Console.WriteLine("Invalid domain format. Please try again.");
+                continue;
+            }
+
+            if (email.Length > 254)
+            {
+                Console.WriteLine("Email is too long. Please try again.");
+                continue;
+            }
+
+            return email;
+        }
     }
 }
