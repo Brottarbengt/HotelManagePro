@@ -16,7 +16,7 @@ public class RoomPicker
             Console.Clear();
             RenderRooms(rooms, selectedFloor, selectedRoomIndex, selectedRooms);
 
-            if (selectedRooms.Any())
+            if (selectedRooms.Count != 0)
             {
                 var selectedRoomNumbers = rooms
                     .Where(r => selectedRooms.Contains(r.RoomNumber))
@@ -46,9 +46,9 @@ public class RoomPicker
                     break;
                 case ConsoleKey.Escape:
                     Console.WriteLine("\nBooking canceled.");
-                    return new List<Room>();
+                    return [];
                 case ConsoleKey.Enter:
-                    if (!selectedRooms.Any())
+                    if (selectedRooms.Count == 0)
                     {
                         AnsiConsole.MarkupLine("\n[red]No room selected, please select one or more rooms or press Escape to cancel booking[/]");
                         Console.WriteLine("\nPress any key to continue...");

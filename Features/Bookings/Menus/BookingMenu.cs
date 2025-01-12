@@ -17,15 +17,15 @@ public class BookingMenu : RootMenu
 
     protected override void InitializeMenuItems()
     {
-        _menuItems.AddRange(new List<IMenuItem>
-        {
+        _menuItems.AddRange(
+        [
             new MenuItem("Create New Booking", () => _bookingController.CreateNewBooking()),
             new MenuItem("Show All Bookings", () => _bookingController.ShowAllBookings()),
             new MenuItem("Search Active Booking by Email", () => _bookingController.SearchActiveBookingByEmail()),
             new MenuItem("Update Booking", () => _bookingController.UpdateBooking()),
             new MenuItem("Delete Booking", () => _bookingController.RemoveBooking()),
             new MenuItem("Back to Main Menu", () => _menuNavigator.NavigateToTopMenu())
-        });
+        ]);
     }
 }
 

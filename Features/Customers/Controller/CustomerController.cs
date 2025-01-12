@@ -117,7 +117,7 @@ public class CustomerController
         }
     }
 
-    private string? GetInput()
+    private static string? GetInput()
     {
         while (true)
         {
@@ -245,7 +245,7 @@ public class CustomerController
     public void ShowAllCustomers()
     {
         var customers = _customerService.GetAllCustomers();
-        if (!customers.Any())
+        if (customers.Count == 0)
         {
             Console.WriteLine("No customers found.");
             Console.WriteLine("\nPress any key to continue...");

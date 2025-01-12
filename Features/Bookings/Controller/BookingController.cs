@@ -20,6 +20,13 @@ public class BookingController
     private readonly CustomerController _customerController;
     private readonly CustomerService _customerService;
     private readonly FindCustomerForBooking _findCustomerForBooking;
+    private static readonly string[] choices =
+                            [
+                                "Find by ID",
+                                "Find by Email",
+                                "Find by Phone",
+                                "Back"
+                            ];
 
     public BookingController(
         BookingService bookingService, 
@@ -53,7 +60,7 @@ public class BookingController
         List<Room> availableRooms = _roomService.GetAvailableRooms(arrivalDate, departureDate);
         var selectedRooms = RoomPicker.PickRooms(availableRooms);
         
-        if (!selectedRooms.Any())
+        if (selectedRooms.Count == 0)
         {
             Console.WriteLine("No rooms selected. Booking cancelled.");
             return;
@@ -97,7 +104,7 @@ public class BookingController
                 return null;
             }
 
-            if (key.KeyChar.ToString().ToLower() == "n")
+            if (key.KeyChar.ToString().Equals("n", StringComparison.CurrentCultureIgnoreCase))
             {
                 var customer = _customerController.CreateNewCustomer();
                 if (customer == null)
@@ -107,7 +114,7 @@ public class BookingController
                 }
                 return customer;
             }
-            else if (key.KeyChar.ToString().ToLower() == "y")
+            else if (key.KeyChar.ToString().Equals("y", StringComparison.CurrentCultureIgnoreCase))
             {
                 while (true)
                 {
@@ -116,13 +123,7 @@ public class BookingController
                     var choice = AnsiConsole.Prompt(
                         new SelectionPrompt<string>()
                             .Title("How would you like to find the customer?")
-                            .AddChoices(new[]
-                            {
-                                "Find by ID",
-                                "Find by Email",
-                                "Find by Phone",
-                                "Back"
-                            }));
+                            .AddChoices(choices));
 
                     int? customerId = null;
                     switch (choice)
@@ -234,7 +235,7 @@ public class BookingController
 
                 var bookings = _bookingService.FindActiveBookingByEmail(email);
 
-                if (!bookings.Any())
+                if (bookings.Count == 0)
                 {
                     Console.WriteLine("No active bookings found for the provided email.");
                     continue;
@@ -253,7 +254,7 @@ public class BookingController
         }
     }
 
-    public void DisplayBooking(Booking booking)
+    public static void DisplayBooking(Booking booking)
     {
         Console.WriteLine($"Booking ID: {booking.BookingId}");
         Console.WriteLine($"Customer: {booking.Customer.FirstName} {booking.Customer.LastName}");
@@ -265,7 +266,7 @@ public class BookingController
         Console.WriteLine(new string('-', 40));
     }
 
-    public int GetNumberOfGuests()
+    public static int GetNumberOfGuests()
     {
         while (true)
         {
@@ -290,7 +291,7 @@ public class BookingController
         }
     }
 
-    public int GetNumberOfExtraBeds(int numberOfGuests, List<Room> selectedRooms)
+    public static int GetNumberOfExtraBeds(int numberOfGuests, List<Room> selectedRooms)
     {
         var standardBeds = selectedRooms.Sum(r => r.RoomType == TypeOfRoom.Single ? 1 : 2);
         var maxExtraBeds = selectedRooms.Count * 1; // 1 extra bed per room maximum
@@ -332,7 +333,7 @@ public class BookingController
         }
     }
 
-    private (DateOnly arrivalDate, DateOnly departureDate) GetDates()
+    private static (DateOnly arrivalDate, DateOnly departureDate) GetDates()
     {
         Console.WriteLine("\nBooking Dates Selection");
         var today = DateOnly.FromDateTime(DateTime.Now);

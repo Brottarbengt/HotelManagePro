@@ -8,7 +8,6 @@ using HotelManagePro.Features.Invoices.Services;
 using HotelManagePro.Features.Invoices.Controller;
 using HotelManagePro.Features.Rooms.Controller;
 using HotelManagePro.Features.Rooms.Services;
-using HotelManagePro.Utils;
 using HotelManagePro.Utils.Menu;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +21,7 @@ namespace HotelManagePro;
 
 public class App
 {
-    public void Run()
+    public static void Run()
     {
         
         var builder = new ConfigurationBuilder().AddJsonFile($"appsettings.json", true, true);
@@ -62,25 +61,12 @@ public class App
             .BuildServiceProvider();
 
 
-        using (var scope = serviceProvider.CreateScope())
-        {
-            var mainMenu = scope.ServiceProvider.GetRequiredService<MainMenu>();
-            var menuNavigator = scope.ServiceProvider.GetRequiredService<MenuNavigator>();
-            menuNavigator.SetTopMenu(mainMenu);
+        using var scope = serviceProvider.CreateScope();
+        var mainMenu = scope.ServiceProvider.GetRequiredService<MainMenu>();
+        var menuNavigator = scope.ServiceProvider.GetRequiredService<MenuNavigator>();
+        menuNavigator.SetTopMenu(mainMenu);
 
-            mainMenu.Show();
-        }
+        mainMenu.Show();
     }
 }
-        /* 
-         
-         This Hotel:
-
-         A three-story hotel with ten rooms each level.
-         6 Single and 4 Doubles each.
-         1 - 6 is single and 7 - 10 is double
-         RoomNumbers start with level followed by roomnumber.
-         Ex. Rooms 010 is the tenth room on ground floor hence a double.
-             Rooms 106 is the sixth room on second floor hence a single.
-
-        */
+        
