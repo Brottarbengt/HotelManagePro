@@ -25,7 +25,7 @@ public class FindCustomerMenu : RootMenu
         {
             new MenuItem("Find by Customer ID", () => _customerController.FindCustomerById()),
             new MenuItem("Find by Email", () => _customerController.FindCustomerByEmail()),
-            new MenuItem("Find by Address", () => _customerController.FindCustomerByAddress()),
+            new MenuItem("Find by Phone", () => _customerController.FindCustomerByPhone()),
             new MenuItem("New Customer", () => _customerController.CreateNewCustomer()),
             new MenuItem("Back to Customer Menu", () => _menuNavigator.NavigateToTopMenu())
         });

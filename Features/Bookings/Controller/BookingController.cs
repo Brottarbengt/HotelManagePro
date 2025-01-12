@@ -7,6 +7,8 @@ using HotelManagePro.Utils;
 using Spectre.Console;
 using HotelManagePro.Features.Invoices.Services;
 using HotelManagePro.Features.Customers.Controller;
+using HotelManagePro.Features.Customers.Services;
+
 
 namespace HotelManagePro.Features.Bookings.Controller;
 
@@ -16,24 +18,36 @@ public class BookingController
     private readonly RoomService _roomService;
     private readonly InvoiceService _invoiceService;
     private readonly CustomerController _customerController;
+    private readonly CustomerService _customerService;
+    private readonly FindCustomerForBooking _findCustomerForBooking;
 
     public BookingController(
         BookingService bookingService, 
         RoomService roomService,
         InvoiceService invoiceService,
-        CustomerController customerController)
+        CustomerController customerController,
+        CustomerService customerService,
+        FindCustomerForBooking findCustomerForBooking)
     {
         _bookingService = bookingService;
         _roomService = roomService;
         _invoiceService = invoiceService;
         _customerController = customerController;
+        _customerService = customerService;
+        _findCustomerForBooking = findCustomerForBooking;
     }
 
     
+
     public void CreateNewBooking()
     {
-        var arrivalDate = DatePicker.PickDate();
-        var departureDate = DatePicker.PickDate();
+        Customer? customer = GetBookingCustomer();
+        if (customer == null)
+        {
+            return;
+        }
+
+        var (arrivalDate, departureDate) = GetDates();
         var numberOfGuests = GetNumberOfGuests();
 
         List<Room> availableRooms = _roomService.GetAvailableRooms(arrivalDate, departureDate);
@@ -47,13 +61,6 @@ public class BookingController
 
         var extraBeds = GetNumberOfExtraBeds(numberOfGuests, selectedRooms);
         
-        var customer = _customerController.CreateNewCustomer();
-        if (customer == null)
-        {
-            Console.WriteLine("Customer creation cancelled. Booking cancelled.");
-            return;
-        }
-
         var basePrice = selectedRooms.Sum(r => r.Price);
         var guestPrice = numberOfGuests * 100;
         var extraBedPrice = extraBeds * 150;
@@ -75,8 +82,81 @@ public class BookingController
         Console.WriteLine($"\nBooking created successfully!");
         DisplayBooking(newBooking);
     }
-    
-    
+    private Customer? GetBookingCustomer()
+    {
+        while (true)
+        {
+            Console.Clear();
+            AnsiConsole.MarkupLine("\n[blue]Existing Customer or New Customer?[/]");
+            AnsiConsole.MarkupLine("Press [green]Y[/] to find existing customer or [green]N[/] to create new customer");
+            
+            var key = Console.ReadKey(true);
+            if (key.Key == ConsoleKey.Escape)
+            {
+                Console.WriteLine("\nBooking cancelled.");
+                return null;
+            }
+
+            if (key.KeyChar.ToString().ToLower() == "n")
+            {
+                var customer = _customerController.CreateNewCustomer();
+                if (customer == null)
+                {
+                    Console.WriteLine("Customer creation cancelled. Booking cancelled.");
+                    return null;
+                }
+                return customer;
+            }
+            else if (key.KeyChar.ToString().ToLower() == "y")
+            {
+                while (true)
+                {
+                    Console.Clear();
+                    AnsiConsole.MarkupLine("\n[blue]Find Customer[/]");
+                    var choice = AnsiConsole.Prompt(
+                        new SelectionPrompt<string>()
+                            .Title("How would you like to find the customer?")
+                            .AddChoices(new[]
+                            {
+                                "Find by ID",
+                                "Find by Email",
+                                "Find by Phone",
+                                "Back"
+                            }));
+
+                    int? customerId = null;
+                    switch (choice)
+                    {
+                        case "Find by ID":
+                            customerId = _findCustomerForBooking.FindById();
+                            break;
+                        case "Find by Email":
+                            customerId = _findCustomerForBooking.FindByEmail();
+                            break;
+                        case "Find by Phone":
+                            customerId = _findCustomerForBooking.FindByPhone();
+                            break;
+                        case "Back":
+                            break;
+                    }
+
+                    if (customerId.HasValue)
+                    {
+                        var customer = _customerService.GetCustomerById(customerId.Value);
+                        if (customer != null)
+                        {
+                            return customer;
+                        }
+                    }
+                    else if (choice == "Back")
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     public void UpdateBooking()
     {
 
@@ -185,7 +265,7 @@ public class BookingController
         Console.WriteLine(new string('-', 40));
     }
 
-    private int GetNumberOfGuests()
+    public int GetNumberOfGuests()
     {
         while (true)
         {
@@ -210,7 +290,7 @@ public class BookingController
         }
     }
 
-    private int GetNumberOfExtraBeds(int numberOfGuests, List<Room> selectedRooms)
+    public int GetNumberOfExtraBeds(int numberOfGuests, List<Room> selectedRooms)
     {
         var standardBeds = selectedRooms.Sum(r => r.RoomType == TypeOfRoom.Single ? 1 : 2);
         var maxExtraBeds = selectedRooms.Count * 1; // 1 extra bed per room maximum
@@ -219,17 +299,64 @@ public class BookingController
         if (neededExtraBeds == 0)
             return 0;
 
-        if (neededExtraBeds > maxExtraBeds)
+        while (true)
         {
-            Console.WriteLine($"Warning: Not enough beds for {numberOfGuests} guests.");
-            Console.WriteLine($"Standard beds: {standardBeds}, Maximum extra beds possible: {maxExtraBeds}");
-            Console.WriteLine("Please select more rooms or reduce number of guests.");
-            return 0;
+            Console.WriteLine($"\nStandard beds in selected rooms: {standardBeds}");
+            Console.WriteLine($"Extra beds possible (0 - {maxExtraBeds})");
+            Console.Write("How many extra beds would you like to add? ");
+            
+            if (int.TryParse(Console.ReadLine(), out int requestedBeds))
+            {
+                if (requestedBeds < 0 || requestedBeds > maxExtraBeds)
+                {
+                    Console.WriteLine($"Please enter a number between 0 and {maxExtraBeds}");
+                    continue;
+                }
+
+                if (standardBeds + requestedBeds < numberOfGuests)
+                {
+                    Console.WriteLine($"\nWarning: Not enough beds for {numberOfGuests} guests.");
+                    Console.WriteLine($"Total beds would be: {standardBeds + requestedBeds}");
+                    Console.Write("Would you like to try again? (y/n): ");
+                    
+                    if (Console.ReadLine()?.Trim().ToLower() == "y")
+                        continue;
+                }
+
+                return requestedBeds;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a number.");
+            }
+        }
+    }
+
+    private (DateOnly arrivalDate, DateOnly departureDate) GetDates()
+    {
+        Console.WriteLine("\nBooking Dates Selection");
+        var today = DateOnly.FromDateTime(DateTime.Now);
+        DateOnly arrivalDate;
+        
+        while (true)
+        {
+            arrivalDate = DatePicker.PickDate("Select Arrival Date");
+            if (arrivalDate >= today)
+                break;
+            
+            Console.WriteLine("Arrival date cannot be in the past. Please select a future date.");
         }
 
-        Console.WriteLine($"\nYou need {neededExtraBeds} extra bed(s) for {numberOfGuests} guests.");
-        Console.Write("Would you like to add extra beds? (y/n): ");
-        
-        return Console.ReadLine()?.Trim().ToLower() == "y" ? neededExtraBeds : 0;
+        DateOnly departureDate;
+        while (true)
+        {
+            departureDate = DatePicker.PickDate("Select Departure Date");
+            if (departureDate > arrivalDate)
+                break;
+            
+            Console.WriteLine("Departure date must be after arrival date. Please select a later date.");
+        }
+
+        return (arrivalDate, departureDate);
     }
 }

@@ -208,11 +208,11 @@ public class CustomerController
         }
     }
 
-    public void FindCustomerByAddress()
+    public void FindCustomerByPhone()
     {
         while (true)
         {
-            Console.WriteLine("\nPress ESC to return to menu or enter address to search:");
+            Console.WriteLine("\nPress ESC to return to menu or enter phone number:");
             
             while (Console.KeyAvailable) Console.ReadKey(true);
             
@@ -220,20 +220,24 @@ public class CustomerController
             if (key.Key == ConsoleKey.Escape)
                 return;
 
-            Console.Write("Address: ");
-            var address = Console.ReadLine();
+            Console.Write("Phone number: ");
+            var phoneInput = Console.ReadLine();
             
-            var customers = _customerService.GetCustomersByAddress(address);
-            if (customers.Any())
+            if (int.TryParse(phoneInput, out int phoneNumber))
             {
-                foreach (var customer in customers)
+                var customer = _customerService.GetCustomerByPhone(phoneNumber);
+                if (customer != null)
                 {
                     DisplayCustomer(customer);
+                }
+                else
+                {
+                    Console.WriteLine("Customer not found.");
                 }
             }
             else
             {
-                Console.WriteLine("No customers found.");
+                Console.WriteLine("Invalid phone number format.");
             }
         }
     }
@@ -258,7 +262,7 @@ public class CustomerController
         Console.ReadKey(true);
     }
 
-    private void DisplayCustomer(Customer customer)
+    public void DisplayCustomer(Customer customer)
     {
         Console.WriteLine($"ID: {customer.CustomerId}");
         Console.WriteLine($"Name: {customer.FirstName} {customer.LastName}");

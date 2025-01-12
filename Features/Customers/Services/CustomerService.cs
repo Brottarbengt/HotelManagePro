@@ -40,22 +40,18 @@ public class CustomerService
             .FirstOrDefault(c => c.Email == email);
     }
 
-    public List<Customer> GetCustomersByAddress(string? address)
-    {
-        if (string.IsNullOrEmpty(address)) return new List<Customer>();
-
-        return _dbContext.Customers
-            .Include(c => c.Address)
-            .Where(c => c.Address != null && 
-                (c.Address.StreetName.Contains(address) || 
-                 c.Address.City.Contains(address)))
-            .ToList();
-    }
 
     public List<Customer> GetAllCustomers()
     {
         return _dbContext.Customers
             .Include(c => c.Address)
             .ToList();
+    }
+
+    public Customer? GetCustomerByPhone(int phoneNumber)
+    {
+        return _dbContext.Customers
+            .Include(c => c.Address)
+            .FirstOrDefault(c => c.PhoneNumber == phoneNumber);
     }
 }

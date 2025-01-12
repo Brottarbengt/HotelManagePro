@@ -9,84 +9,94 @@ namespace HotelManagePro.Utils;
 
 public static class DatePicker
 {
-    public static DateOnly PickDate()
+    public static DateOnly PickDate(string headline)
     {
-        DateTime currentDate = DateTime.Now;
-        DateTime selectedDate = new DateTime(currentDate.Year, currentDate.Month, 1);
+        var today = DateOnly.FromDateTime(DateTime.Now);
+        var maxDate = today.AddMonths(6);
+        var currentDate = today;
 
         while (true)
         {
             Console.Clear();
-            RenderCalendar(selectedDate);
+            AnsiConsole.Write(new Rule($"[blue]{headline}[/]").RuleStyle("grey").Centered());
+            DisplayCalendar(currentDate, today, maxDate);
 
-            // Läsa användarens tangent
             var key = Console.ReadKey(true).Key;
+            var newDate = currentDate;
 
             switch (key)
             {
-                case ConsoleKey.RightArrow:
-                    selectedDate = selectedDate.AddDays(1);
-                    break;
                 case ConsoleKey.LeftArrow:
-                    selectedDate = selectedDate.AddDays(-1);
+                    newDate = currentDate.AddDays(-1);
+                    break;
+                case ConsoleKey.RightArrow:
+                    newDate = currentDate.AddDays(1);
                     break;
                 case ConsoleKey.UpArrow:
-                    selectedDate = selectedDate.AddDays(-7);
+                    newDate = currentDate.AddDays(-7);
                     break;
                 case ConsoleKey.DownArrow:
-                    selectedDate = selectedDate.AddDays(7);
+                    newDate = currentDate.AddDays(7);
                     break;
                 case ConsoleKey.Enter:
-                    return DateOnly.FromDateTime(selectedDate);
-
+                    return currentDate;
             }
+
+            if (newDate >= today && newDate <= maxDate)
+                currentDate = newDate;
         }
-        static void RenderCalendar(DateTime selectedDate)
+    }
+
+    private static void DisplayCalendar(DateOnly currentDate, DateOnly minDate, DateOnly maxDate)
+    {
+        var table = new Table()
+            .Border(TableBorder.Simple)
+            .BorderColor(Color.Grey)
+            .Title($"[yellow]{currentDate:MMMM yyyy}[/]")
+            .AddColumns("Mo", "Tu", "We", "Th", "Fr", "Sa", "Su");
+
+        var firstDayOfMonth = new DateOnly(currentDate.Year, currentDate.Month, 1);
+        var daysInMonth = DateTime.DaysInMonth(currentDate.Year, currentDate.Month);
+        var dayOfWeek = ((int)firstDayOfMonth.DayOfWeek + 6) % 7;
+
+        var weekDays = new List<string>();
+        
+        // Add leading spaces
+        for (int i = 0; i < dayOfWeek; i++)
+            weekDays.Add(" ");
+
+        // Add days
+        for (int day = 1; day <= daysInMonth; day++)
         {
-            var calendarContent = new StringWriter();
+            var date = new DateOnly(currentDate.Year, currentDate.Month, day);
+            string dayText;
 
-            // Kalenderhuvud
-            calendarContent.WriteLine($"[red]{selectedDate:MMMM}[/]".ToUpper());
-            calendarContent.WriteLine("Mån  Tis  Ons  Tor  Fre  Lör  Sön");
-            calendarContent.WriteLine("─────────────────────────────────");
+            if (date < minDate || date > maxDate)
+                dayText = "[grey]" + day.ToString().PadLeft(2) + "[/]";
+            else if (date == currentDate)
+                dayText = $"[green]{day,2}[/]";
+            else
+                dayText = $"{day,2}";
 
-            DateTime firstDayOfMonth = new DateTime(selectedDate.Year, selectedDate.Month, 1);
-            int daysInMonth = DateTime.DaysInMonth(selectedDate.Year, selectedDate.Month);
-            int startDay = (int)firstDayOfMonth.DayOfWeek;
-            startDay = (startDay == 0) ? 6 : startDay - 1;
+            weekDays.Add(dayText);
 
-            for (int i = 0; i < startDay; i++)
+            if (weekDays.Count == 7)
             {
-                calendarContent.Write("     ");
+                table.AddRow(weekDays.ToArray());
+                weekDays.Clear();
             }
-
-            for (int day = 1; day <= daysInMonth; day++)
-            {
-                if (day == selectedDate.Day)
-                {
-                    calendarContent.Write($"[green]{day,2}[/]   ");
-                }
-                else
-                {
-                    calendarContent.Write($"{day,2}   ");
-                }
-
-                if ((startDay + day) % 7 == 0)
-                {
-                    calendarContent.WriteLine();
-                }
-            }
-
-            var panel = new Panel(calendarContent.ToString())
-            {
-                Border = BoxBorder.Double,
-                Header = new PanelHeader(($"[red]{selectedDate:yyyy}[/]"), Justify.Center)
-            };
-
-            AnsiConsole.Write(panel);
-            Console.WriteLine();
-            AnsiConsole.MarkupLine("\nUse Arrow Keys [blue]\u25C4 \u25B2 \u25BA \u25BC[/] to \nnavigate and [green]Enter[/] to confirm.");
         }
+
+        // Add remaining spaces to complete the last week
+        while (weekDays.Count > 0 && weekDays.Count < 7)
+            weekDays.Add(" ");
+
+        if (weekDays.Count == 7)
+            table.AddRow(weekDays.ToArray());
+
+        AnsiConsole.Write(table);
+        AnsiConsole.MarkupLine("\nUse [green]Arrow keys[/] to choose date");       
+        AnsiConsole.MarkupLine("Press [green]Enter[/] to select date");
     }
 }
 

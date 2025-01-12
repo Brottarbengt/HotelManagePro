@@ -16,6 +16,15 @@ public class RoomPicker
             Console.Clear();
             RenderRooms(rooms, selectedFloor, selectedRoomIndex, selectedRooms);
 
+            if (selectedRooms.Any())
+            {
+                var selectedRoomNumbers = rooms
+                    .Where(r => selectedRooms.Contains(r.RoomNumber))
+                    .Select(r => r.RoomNumber)
+                    .OrderBy(n => n);
+                AnsiConsole.MarkupLine($"\n[blue]Selected Room numbers:[/] {string.Join(", ", selectedRoomNumbers)}");
+            }
+
             var key = Console.ReadKey(true).Key;
 
             switch (key)
@@ -35,7 +44,17 @@ public class RoomPicker
                 case ConsoleKey.Spacebar:
                     ToggleRoomSelection(rooms, selectedFloor, selectedRoomIndex, selectedRooms);
                     break;
+                case ConsoleKey.Escape:
+                    Console.WriteLine("\nBooking canceled.");
+                    return new List<Room>();
                 case ConsoleKey.Enter:
+                    if (!selectedRooms.Any())
+                    {
+                        AnsiConsole.MarkupLine("\n[red]No room selected, please select one or more rooms or press Escape to cancel booking[/]");
+                        Console.WriteLine("\nPress any key to continue...");
+                        Console.ReadKey(true);
+                        continue;
+                    }
                     return rooms.Where(r => selectedRooms.Contains(r.RoomNumber)).ToList();
             }
         }
@@ -71,7 +90,7 @@ public class RoomPicker
 
         AnsiConsole.Write(panel);
         Console.WriteLine();
-        AnsiConsole.MarkupLine("\nUse Arrow Keys [blue]\u25C4 \u25B2 \u25BA \u25BC[/] to navigate, [green]Space[/] to select/deselect, and [green]Enter[/] to confirm.");
+        AnsiConsole.MarkupLine("\nUse [green]Arrow Keys[/] to navigate, [green]Space[/] to select/deselect, and [green]Enter[/] to confirm.");
     }
 
     private static string GetRoomMarkup(Room room, bool isSelected, bool isRoomSelected)

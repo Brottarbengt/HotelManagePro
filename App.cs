@@ -58,6 +58,7 @@ public class App
             .AddScoped<RoomMenu>()
             .AddScoped<InvoiceMenu>()
             .AddScoped<FindCustomerMenu>()
+            .AddScoped<FindCustomerForBooking>()
             .BuildServiceProvider();
 
 
