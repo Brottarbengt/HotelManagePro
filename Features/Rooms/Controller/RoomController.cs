@@ -13,10 +13,12 @@ namespace HotelManagePro.Features.Rooms.Controller
     public class RoomController
     {
         private readonly RoomService _roomService;
+        private readonly BookingService _bookingService;
 
-        public RoomController(RoomService roomService)
+        public RoomController(RoomService roomService, BookingService bookingService)
         {
             _roomService = roomService;
+            _bookingService = bookingService;
         }
 
         public void ShowAllRooms()
@@ -48,10 +50,37 @@ namespace HotelManagePro.Features.Rooms.Controller
                     Console.WriteLine($"Room {room.RoomNumber}");
                     Console.WriteLine($"Type: {room.RoomType}");
                     Console.WriteLine($"Price: {room.Price:C}");
+                    Console.WriteLine($"Active: {room.IsActive}");
                 }
                 else
                 {
                     Console.WriteLine("Room not found.");
+                }
+            }
+        }
+
+        public void DisplayRoom(List<Room> rooms)
+        {
+            foreach (var room in rooms)
+            {
+                Console.WriteLine($"\nRoom {room.RoomNumber}");
+                Console.WriteLine($"Type: {room.RoomType}");
+                Console.WriteLine($"Size: {room.Size} m²");
+                Console.WriteLine($"Price: {room.Price:C}");
+                Console.WriteLine($"Status: {(room.IsActive ? "Active" : "Inactive")}");
+
+                var bookedDates = _bookingService.GetRoomBookedDates(room.RoomNumber);
+                if (bookedDates.Count != 0)
+                {
+                    Console.WriteLine("Booked Dates:");
+                    foreach (var date in bookedDates)
+                    {
+                        Console.WriteLine(date.ToString("yyyy-MM-dd"));
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No future bookings.");
                 }
             }
         }
@@ -61,21 +90,15 @@ namespace HotelManagePro.Features.Rooms.Controller
             var rooms = _roomService.GetAllRooms();
             var selectedRooms = RoomPicker.PickRooms(rooms);
             
-            if (!selectedRooms.Any())
+            if (selectedRooms.Count == 0)
             {
                 Console.WriteLine("No rooms selected.");
                 return;
             }
+            else
+            DisplayRoom(selectedRooms);
 
-            foreach (var room in selectedRooms)
-            {
-                Console.WriteLine($"\nEditing Room {room.RoomNumber}");
-                Console.WriteLine($"Current details:");
-                Console.WriteLine($"Type: {room.RoomType}");
-                Console.WriteLine($"Size: {room.Size} m²");
-                Console.WriteLine($"Price: {room.Price:C}");
-                Console.WriteLine($"Status: {(room.IsActive ? "Active" : "Inactive")}");
-            }
+
         }
     }
 }

@@ -1,5 +1,6 @@
 using HotelManagePro.Database;
 using HotelManagePro.Features.Bookings.Models;
+using HotelManagePro.Features.Rooms.Models;
 using HotelManagePro.Utils;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,10 +46,12 @@ namespace HotelManagePro.Features.Bookings.Services
         public void RemoveBooking(int bookingId)
         {
             var booking = _dbContext.Bookings.FirstOrDefault(b => b.BookingId == bookingId);
-            
+
             if (booking == null)
-                throw new ArgumentException($"Bokning med ID {bookingId} hittades inte.");
-        
+            {
+                throw new ArgumentException($"Booking with ID {bookingId} could not be found.");
+            }
+
             _dbContext.Bookings.Remove(booking);
             _dbContext.SaveChanges();
         }
@@ -75,6 +78,17 @@ namespace HotelManagePro.Features.Bookings.Services
                 .Include(b => b.Customer)
                 .Include(b => b.Rooms)
                 .FirstOrDefault(b => b.BookingId == id);
+        }
+
+        public List<DateOnly> GetRoomBookedDates(int roomNumber)
+        {
+            var bookedDates = _dbContext.Bookings
+                .Where(b => b.Rooms.Any(r => r.RoomNumber == roomNumber) && b.ArrivalDate >= DateOnly.FromDateTime(DateTime.Now))
+                .SelectMany(b => Enumerable.Range(0, b.DepartureDate.DayNumber - b.ArrivalDate.DayNumber)
+                                           .Select(offset => b.ArrivalDate.AddDays(offset)))
+                .ToList();
+
+            return bookedDates;
         }
     }
 }
