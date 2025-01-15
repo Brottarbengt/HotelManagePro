@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
-using FluentValidation.Validators;
-using HotelManagePro.Features.Bookings.Models;
+
 
 namespace HotelManagePro.Features.Invoices.Models;
 

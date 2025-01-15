@@ -1,15 +1,4 @@
-﻿using HotelManagePro.Database;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿
+using HotelManagePro;
 
-namespace HotelManagePro
-{
-    internal class Program
-    {
-        static void Main(string[] args)
-        {
-            var app = new App();
-            App.Run();
-        }
-    }
-}
+App.Run();

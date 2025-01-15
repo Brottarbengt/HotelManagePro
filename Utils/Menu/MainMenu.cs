@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HotelManagePro.Features.Bookings.Menus;
+﻿using HotelManagePro.Features.Bookings.Menus;
 using HotelManagePro.Features.Customers.Menus;
 using HotelManagePro.Features.Rooms.Menus;
 using HotelManagePro.Features.Invoices.Menus;
@@ -35,13 +29,13 @@ public class MainMenu : RootMenu
 
     protected override void InitializeMenuItems()
     {
-        _menuItems.AddRange(new List<IMenuItem>
-        {
+        _menuItems.AddRange(
+        [
             new MenuItem("Bookings", () => _bookingMenu.Show()),
             new MenuItem("Customers", () => _customerMenu.Show()),
             new MenuItem("Rooms", () => _roomMenu.Show()),
             new MenuItem("Invoices", () => _invoiceMenu.Show()),
             new MenuItem("Exit", () => Environment.Exit(0))
-        });
+        ]);
     }
 }

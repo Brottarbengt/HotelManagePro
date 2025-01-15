@@ -1,10 +1,4 @@
-﻿using HotelManagePro.Features.Customers.Services;
-using HotelManagePro.Features.Invoices.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HotelManagePro.Features.Invoices.Services;
 using HotelManagePro.Features.Invoices.Models;
 using HotelManagePro.Features.Bookings.Services;
 
@@ -26,7 +20,7 @@ public class InvoiceController
     public void ShowAllInvoices()
     {
         var invoices = _invoiceService.GetAllInvoices();
-        if (!invoices.Any())
+        if (invoices.Count == 0)
         {
             Console.WriteLine("No invoices found.");
             return;

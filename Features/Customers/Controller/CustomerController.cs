@@ -1,11 +1,5 @@
-﻿using HotelManagePro.Features.Bookings.Services;
-using HotelManagePro.Features.Customers.Services;
+﻿using HotelManagePro.Features.Customers.Services;
 using HotelManagePro.Features.Customers.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Spectre.Console;
 
 namespace HotelManagePro.Features.Customers.Controller;
@@ -263,7 +257,7 @@ public class CustomerController
         Console.ReadKey(true);
     }
 
-    public static void DisplayCustomer(Customer customer)
+    public void DisplayCustomer(Customer customer)
     {
         Console.WriteLine($"ID: {customer.CustomerId}");
         Console.WriteLine($"Name: {customer.FirstName} {customer.LastName}");

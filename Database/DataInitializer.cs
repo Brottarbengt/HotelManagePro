@@ -1,8 +1,5 @@
 ﻿using Bogus;
-using HotelManagePro.Database;
-using HotelManagePro.Features.Bookings.Models;
 using HotelManagePro.Features.Customers.Models;
-using HotelManagePro.Features.Invoices.Models;
 using HotelManagePro.Features.Rooms.Models;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,12 +1,7 @@
 ﻿using FluentValidation;
 using HotelManagePro.Features.Customers.Models;
 using HotelManagePro.Features.Invoices.Models;
-using HotelManagePro.Features.Rooms.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace HotelManagePro.Features.Bookings.Models
 {
@@ -35,7 +30,7 @@ namespace HotelManagePro.Features.Bookings.Models
 
             RuleFor(b => b.Rooms)
                 .NotNull().WithMessage("At least one room must be selected.")
-                .Must(rooms => rooms.Any()).WithMessage("Rooms list cannot be empty.")
+                .Must(rooms => rooms.Count != 0).WithMessage("Rooms list cannot be empty.")
                 .Must(rooms => rooms.All(r => r.IsActive))
                 .WithMessage("All selected rooms must be active.");
 
@@ -47,7 +42,7 @@ namespace HotelManagePro.Features.Bookings.Models
             if (string.IsNullOrEmpty(input))
                 throw new ArgumentException("Booking ID cannot be empty.");
         
-            if (bookings == null || !bookings.Any())
+            if (bookings == null || bookings.Count == 0)
                 throw new ArgumentException("No bookings available.");
 
             if (!int.TryParse(input, out int bookingId))

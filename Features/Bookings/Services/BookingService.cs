@@ -1,7 +1,5 @@
 using HotelManagePro.Database;
 using HotelManagePro.Features.Bookings.Models;
-using HotelManagePro.Features.Rooms.Models;
-using HotelManagePro.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagePro.Features.Bookings.Services
