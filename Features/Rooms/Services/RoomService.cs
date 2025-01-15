@@ -40,5 +40,23 @@ namespace HotelManagePro.Features.Rooms.Services
             return _dbContext.Rooms.FirstOrDefault(r => r.RoomNumber == roomNumber);
         }
 
+        public void UpdateRoom(Room room)
+        {
+            _dbContext.Update(room);
+            _dbContext.SaveChanges();
+        }
+
+        public void CreateRoom(Room room)
+        {
+            _dbContext.Rooms.Add(room);
+            _dbContext.SaveChanges();
+        }
+
+        public void DeleteRoom(Room room)
+        {
+            _dbContext.Rooms.Remove(room);
+            _dbContext.SaveChanges();
+        }
+
     }
 }

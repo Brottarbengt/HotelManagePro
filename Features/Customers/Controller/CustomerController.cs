@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Spectre.Console;
 
 namespace HotelManagePro.Features.Customers.Controller;
 
@@ -262,14 +263,14 @@ public class CustomerController
         Console.ReadKey(true);
     }
 
-    public void DisplayCustomer(Customer customer)
+    public static void DisplayCustomer(Customer customer)
     {
         Console.WriteLine($"ID: {customer.CustomerId}");
         Console.WriteLine($"Name: {customer.FirstName} {customer.LastName}");
         Console.WriteLine($"Email: {customer.Email}");
         Console.WriteLine($"Phone: {customer.PhoneNumber}");
         Console.WriteLine($"Date of Birth: {customer.DateOfBirth:d}");
-        Console.WriteLine($"Status: {(customer.IsActive ? "Active" : "Inactive")}");
+        Console.WriteLine($"Status: {(customer.IsActive ? "Active" : "Soft Deleted")}");
         
         if (customer.Address != null)
         {
@@ -282,5 +283,169 @@ public class CustomerController
         }
         
         Console.WriteLine(new string('-', 40));
+    }
+
+    private Customer? FindCustomer(string purpose)
+    {
+        while (true)
+        {
+            Console.Clear();
+            AnsiConsole.MarkupLine($"\n[blue]Find Customer to {purpose}[/]");
+            var choice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("How would you like to find the customer?")
+                    .AddChoices(
+                    [
+                        "Find by ID",
+                        "Find by Email",
+                        "Find by Phone",
+                        "Back to Menu"
+                    ]));
+
+            Customer? customer = null;
+            switch (choice)
+            {
+                case "Find by ID":
+                    Console.Write("\nEnter Customer ID: ");
+                    if (int.TryParse(Console.ReadLine(), out int id))
+                    {
+                        customer = _customerService.GetCustomerById(id);
+                    }
+                    break;
+
+                case "Find by Email":
+                    Console.Write("\nEnter Email: ");
+                    var email = Console.ReadLine();
+                    customer = _customerService.GetCustomerByEmail(email);
+                    break;
+
+                case "Find by Phone":
+                    Console.Write("\nEnter Phone: ");
+                    if (int.TryParse(Console.ReadLine(), out int phone))
+                    {
+                        customer = _customerService.GetCustomerByPhone(phone);
+                    }
+                    break;
+
+                case "Back to Menu":
+                    return null;
+            }
+
+            if (customer != null)
+            {
+                Console.WriteLine("\nCustomer found:");
+                DisplayCustomer(customer);
+                return customer;
+            }
+            
+            Console.WriteLine("Customer not found.");
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(true);
+        }
+    }
+
+    public void FindCustomerForUpdate()
+    {
+        var customer = FindCustomer("Update");
+        if (customer != null)
+        {
+            UpdateCustomerDetails(customer);
+        }
+    }
+
+    public void SoftDeleteCustomer()
+    {
+        var customer = FindCustomer("Soft Delete");
+        if (customer != null)
+        {
+            Console.Write("\nAre you sure you want to soft delete this customer? (y/n): ");
+            if (Console.ReadLine()?.Trim().ToLower() == "y")
+            {
+                customer.IsActive = false;
+                _customerService.UpdateCustomer(customer);
+                Console.WriteLine("Customer soft deleted successfully.");
+                Console.WriteLine("\nPress any key to continue...");
+                Console.ReadKey(true);
+            }
+        }
+    }
+
+    public void HardDeleteCustomer()
+    {
+        var customer = FindCustomer("Hard Delete");
+        if (customer != null)
+        {
+            Console.WriteLine("\n[red]WARNING: This action cannot be undone![/]");
+            Console.Write("Are you sure you want to permanently delete this customer? (y/n): ");
+            if (Console.ReadLine()?.Trim().ToLower() == "y")
+            {
+                _customerService.DeleteCustomer(customer);
+                Console.WriteLine("Customer permanently deleted.");
+                Console.WriteLine("\nPress any key to continue...");
+                Console.ReadKey(true);
+            }
+        }
+    }
+
+    private void UpdateCustomerDetails(Customer customer)
+    {
+        Console.WriteLine("\nEnter new details (press Enter to keep current value):");
+
+        Console.Write($"First Name ({customer.FirstName}): ");
+        var firstName = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(firstName) && CustomerValidator.IsValidName(firstName))
+            customer.FirstName = firstName;
+
+        Console.Write($"Last Name ({customer.LastName}): ");
+        var lastName = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(lastName) && CustomerValidator.IsValidName(lastName))
+            customer.LastName = lastName;
+
+        Console.Write($"Email ({customer.Email}): ");
+        var email = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(email) && CustomerValidator.IsValidEmail(email))
+            customer.Email = email;
+
+        Console.Write($"Phone ({customer.PhoneNumber}): ");
+        var phoneInput = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(phoneInput) && CustomerValidator.IsValidPhoneNumber(phoneInput, out int phone))
+            customer.PhoneNumber = phone;
+
+        Console.Write($"Date of Birth ({customer.DateOfBirth:yyyy-MM-dd}): ");
+        var dobInput = Console.ReadLine();
+        if (!string.IsNullOrWhiteSpace(dobInput) && CustomerValidator.IsValidDateOfBirth(dobInput, out DateOnly dob))
+            customer.DateOfBirth = dob;
+
+        Console.Write("Update address? (y/n): ");
+        if (Console.ReadLine()?.ToLower() == "y")
+        {
+            Console.Write($"Street Name ({customer.Address?.StreetName}): ");
+            var streetName = Console.ReadLine();
+
+            Console.Write($"House Number ({customer.Address?.HouseNumber}): ");
+            var houseNumber = Console.ReadLine();
+
+            Console.Write($"Postal Code ({customer.Address?.PostalCode}): ");
+            var postalCode = Console.ReadLine();
+
+            Console.Write($"City ({customer.Address?.City}): ");
+            var city = Console.ReadLine();
+
+            if (CustomerValidator.IsValidAddress(streetName, houseNumber, postalCode, city))
+            {
+                customer.Address = new Address
+                {
+                    StreetName = streetName!,
+                    HouseNumber = houseNumber!,
+                    PostalCode = postalCode!,
+                    City = city!
+                };
+            }
+        }
+
+        _customerService.UpdateCustomer(customer);
+        Console.WriteLine("\nCustomer updated successfully!");
+        Console.WriteLine("\nPress any key to continue...");
+        Console.ReadKey(true);
     }
 }

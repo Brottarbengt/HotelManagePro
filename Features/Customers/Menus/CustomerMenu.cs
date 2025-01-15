@@ -11,27 +11,26 @@ namespace HotelManagePro.Features.Customers.Menus;
 public class CustomerMenu : RootMenu
 {
     private readonly CustomerController _customerController;
-    private readonly FindCustomerMenu _findCustomerMenu;
+    
     protected override string MenuTitle => "Customer Menu";
 
-    public CustomerMenu(
-        MenuNavigator menuNavigator,
-        CustomerController customerController,
-        FindCustomerMenu findCustomerMenu) 
+    public CustomerMenu(MenuNavigator menuNavigator, CustomerController customerController) 
         : base(menuNavigator)
+        
     {
         _customerController = customerController;
-        _findCustomerMenu = findCustomerMenu;
     }
 
     protected override void InitializeMenuItems()
     {
-        _menuItems.AddRange(new List<IMenuItem>
-        {
-            new MenuItem("Find Customer", () => _findCustomerMenu.Show()),
-            new MenuItem("Create New Customer", () => _customerController.CreateNewCustomer()),
+        _menuItems.AddRange(
+        [
+            new MenuItem("Create New Customer", () => _customerController.CreateNewCustomer()),            
+            new MenuItem("Find and Update Customer", () => _customerController.FindCustomerForUpdate()),
             new MenuItem("Show All Customers", () => _customerController.ShowAllCustomers()),
+            new MenuItem("Delete Customer( SOFT DELETE )", () => _customerController.SoftDeleteCustomer()),
+            new MenuItem("Delete Customer( HARD DELETE )", () => _customerController.HardDeleteCustomer()),
             new MenuItem("Back to Main Menu", () => _menuNavigator.NavigateToTopMenu())
-        });
+        ]);
     }
 }

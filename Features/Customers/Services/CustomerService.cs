@@ -54,4 +54,16 @@ public class CustomerService
             .Include(c => c.Address)
             .FirstOrDefault(c => c.PhoneNumber == phoneNumber);
     }
+
+    public void UpdateCustomer(Customer customer)
+    {
+        _dbContext.Update(customer);
+        _dbContext.SaveChanges();
+    }
+
+    public void DeleteCustomer(Customer customer)
+    {
+        _dbContext.Remove(customer);
+        _dbContext.SaveChanges();
+    }
 }
