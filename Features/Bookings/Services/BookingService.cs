@@ -81,13 +81,14 @@ namespace HotelManagePro.Features.Bookings.Services
 
         public List<DateOnly> GetRoomBookedDates(int roomNumber)
         {
-            var bookedDates = _dbContext.Bookings
+            var bookings = _dbContext.Bookings
                 .Where(b => b.Rooms.Any(r => r.RoomNumber == roomNumber) && b.ArrivalDate >= DateOnly.FromDateTime(DateTime.Now))
+                .AsEnumerable()
                 .SelectMany(b => Enumerable.Range(0, b.DepartureDate.DayNumber - b.ArrivalDate.DayNumber)
                                            .Select(offset => b.ArrivalDate.AddDays(offset)))
                 .ToList();
 
-            return bookedDates;
+            return bookings;
         }
 
         public List<Booking> GetBookingsByDateRange(DateOnly startDate, DateOnly endDate)
