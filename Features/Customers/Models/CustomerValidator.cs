@@ -46,25 +46,20 @@ public class CustomerValidator : AbstractValidator<Customer>
 
     public static bool IsValidEmail(string? email)
     {
-        var validator = new CustomerValidator();
-        var customer = new Customer 
-        { 
-            FirstName = "Temp",
-            LastName = "Temp",
-            Email = email ?? "",
-            PhoneNumber = 0,
-            DateOfBirth = DateOnly.FromDateTime(DateTime.Now),
-            Address = new Address
-            {
-                StreetName = "Temp",
-                HouseNumber = "1",
-                PostalCode = "12345",
-                City = "TempCity"
-            }
-        };
-        var result = validator.Validate(customer);
-        return result.IsValid;
-    } 
+        if (string.IsNullOrWhiteSpace(email))
+            return false;
+
+        try
+        {
+            // Använd System.Net.Mail.MailAddress för bättre e-postvalidering
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
     public static bool IsValidName(string? name)
     {

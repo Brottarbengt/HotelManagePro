@@ -69,7 +69,11 @@ public class BookingController
             return;
         }
 
-        var extraBeds = GetNumberOfExtraBeds(numberOfGuests, selectedRooms);
+        var extraBeds = GetNumberOfExtraBeds(numberOfGuests, selectedRooms, arrivalDate, departureDate);
+        if (extraBeds == -1)
+        {
+            return;
+        }
         
         var basePrice = selectedRooms.Sum(r => r.Price);
         var guestPrice = numberOfGuests * 100;
@@ -91,6 +95,7 @@ public class BookingController
         _bookingService.CreateNewBooking(newBooking);
         Console.WriteLine($"\nBooking created successfully!");
         DisplayBooking(newBooking);
+        Console.ReadKey(true);
     }
     private Customer? GetBookingCustomer()
     {
@@ -242,7 +247,7 @@ public class BookingController
                         break;
 
                     case "Save and Exit":
-                        var extraBeds = GetNumberOfExtraBeds(booking.NumberOfGuests, booking.Rooms);
+                        var extraBeds = GetNumberOfExtraBeds(booking.NumberOfGuests, booking.Rooms, booking.ArrivalDate, booking.DepartureDate);
                         var basePrice = booking.Rooms.Sum(r => r.Price);
                         var guestPrice = booking.NumberOfGuests * 100;
                         var extraBedPrice = extraBeds * 150;
@@ -309,48 +314,66 @@ public class BookingController
         {
             Console.WriteLine($"An error occurred: {ex.Message}");
         }
+        Console.WriteLine("\nPress any key to continue...");
+        Console.ReadKey(true);
     }
 
     public void RemoveBooking()
     {
         try
         {
-            ShowBookingsByDateRange();
-            Console.WriteLine("\nSelect date range for the booking you want to remove:");
-            var (startDate, endDate) = GetDates();
+            Console.Write("\nEnter Booking ID to remove: ");
+            string? input = Console.ReadLine();
             
-            var bookings = _bookingService.GetBookingsByDateRange(startDate, endDate);
-            if (bookings.Count == 0) return;
-
+            var bookings = _bookingService.GetAllBookings();
             int bookingId;
-            while (true)
+            
+            try
             {
-                try
-                {
-                    Console.WriteLine("Enter the ID of the booking to remove:");
-                    string? input = Console.ReadLine();
-                    bookingId = _bookingValidator.GetValidBookingId(input, bookings);
-                    break; 
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Invalid input: {ex.Message}. Please try again.");
-                }
+                bookingId = _bookingValidator.GetValidBookingId(input, bookings);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Invalid input: {ex.Message}");
+                Console.WriteLine("\nPress any key to continue...");
+                Console.ReadKey(true);
+                return;
             }
 
-            _bookingService.RemoveBooking(bookingId);
-            Console.WriteLine("Booking removed successfully.");
+            var booking = bookings.First(b => b.BookingId == bookingId);
+            
+            Console.Clear();
+            Console.WriteLine("Found booking:");
+            Console.WriteLine(new string('-', 40));
+            DisplayBooking(booking);
+            Console.WriteLine(new string('-', 40));
+
+            Console.Write("\nAre you sure you want to remove this booking? (y/n): ");
+            if (Console.ReadLine()?.Trim().ToLower() == "y")
+            {
+                _bookingService.RemoveBooking(bookingId);
+                Console.WriteLine("Booking removed successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Removal cancelled.");
+            }
+            
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(true);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(true);
         }
     }
     public void SearchActiveBookingByEmail()
     {
         while (true)
         {
-            Console.WriteLine("\nPress ESC to return to menu or search for bookings:");
+            Console.WriteLine("\nPress ESC to return to menu or any key to proceed with search for bookings:");
             
             while (Console.KeyAvailable) Console.ReadKey(true);
             
@@ -421,10 +444,10 @@ public class BookingController
         }
     }
 
-    public  int GetNumberOfExtraBeds(int numberOfGuests, List<Room> selectedRooms)
+    public int GetNumberOfExtraBeds(int numberOfGuests, List<Room> selectedRooms, DateOnly arrivalDate, DateOnly departureDate)
     {
         var standardBeds = selectedRooms.Sum(r => r.RoomType == TypeOfRoom.Single ? 1 : 2);
-        var maxExtraBeds = selectedRooms.Count * 1; // 1 extra bed per room maximum
+        var maxExtraBeds = selectedRooms.Sum(r => r.RoomType == TypeOfRoom.Single ? 1 : 2); // 1 extra bed för enkelrum, 2 för dubbelrum
         var neededExtraBeds = Math.Max(0, numberOfGuests - standardBeds);
 
         if (neededExtraBeds == 0)
@@ -448,10 +471,33 @@ public class BookingController
                 {
                     Console.WriteLine($"\nWarning: Not enough beds for {numberOfGuests} guests.");
                     Console.WriteLine($"Total beds would be: {standardBeds + requestedBeds}");
-                    Console.Write("Would you like to try again? (y/n): ");
-                    
-                    if (Console.ReadLine()?.Trim().ToLower() == "y")
-                        continue;
+
+                    // Kontrollera om det är möjligt att få tillräckligt med sängar med nuvarande rum
+                    if (standardBeds + maxExtraBeds >= numberOfGuests)
+                    {
+                        Console.Write("Would you like to try again with more extra beds? (y/n): ");
+                        if (Console.ReadLine()?.Trim().ToLower() == "y")
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        Console.Write("Current rooms cannot accommodate all guests. Would you like to select different rooms? (y/n): ");
+                        if (Console.ReadLine()?.Trim().ToLower() == "y")
+                        {
+                            var availableRooms = _roomService.GetAvailableRooms(arrivalDate, departureDate);
+                            selectedRooms = RoomPicker.PickRooms(availableRooms);
+                            if (selectedRooms.Count == 0)
+                            {
+                                Console.WriteLine("No rooms selected. Booking cancelled.");
+                                return -1;
+                            }
+                            standardBeds = selectedRooms.Sum(r => r.RoomType == TypeOfRoom.Single ? 1 : 2);
+                            maxExtraBeds = selectedRooms.Count * 1;
+                            continue;
+                        }
+                    }
                 }
 
                 return requestedBeds;

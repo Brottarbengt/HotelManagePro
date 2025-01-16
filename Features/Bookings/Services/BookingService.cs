@@ -75,6 +75,7 @@ namespace HotelManagePro.Features.Bookings.Services
             return _dbContext.Bookings
                 .Include(b => b.Customer)
                 .Include(b => b.Rooms)
+                .Include(b => b.Invoice)
                 .FirstOrDefault(b => b.BookingId == id);
         }
 

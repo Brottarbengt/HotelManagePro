@@ -16,6 +16,7 @@ using HotelManagePro.Features.Customers.Menus;
 using HotelManagePro.Features.Rooms.Menus;
 using HotelManagePro.Features.Invoices.Menus;
 using HotelManagePro.Features.Bookings.Models;
+using HotelManagePro.Graphics;
 
 
 namespace HotelManagePro;
@@ -24,6 +25,7 @@ public class App
 {
     public static void Run()
     {
+        Startscreen.Show();
         
         var builder = new ConfigurationBuilder().AddJsonFile($"appsettings.json", true, true);
         var config = builder.Build();
