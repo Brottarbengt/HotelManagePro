@@ -1,11 +1,5 @@
 ﻿using HotelManagePro.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HotelManagePro.Features.Invoices.Models;
-using HotelManagePro.Features.Rooms.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagePro.Features.Invoices.Services;
@@ -32,7 +26,9 @@ public class InvoiceService
 
     public List<Invoice> GetAllInvoices()
     {
-        return _dbContext.Invoices.ToList();
+        return _dbContext.Invoices
+            .Include(i => i.BookingId)
+            .ToList();
     }
 
     public Invoice? GetInvoiceById(int id)
@@ -60,21 +56,24 @@ public class InvoiceService
 
     public List<Invoice> GetInvoicesByCustomerEmail(string? email)
     {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return [];
+        }
+
+        var bookingsWithCustomerEmail = _dbContext.Bookings
+            .Where(b => b.Customer.Email.ToLower() == email.ToLower())
+            .Select(b => b.BookingId);
+
         return _dbContext.Invoices
-            .Include(i => i.Booking)
-                .ThenInclude(b => b.Customer)
-            .Where(i => i.Booking.Customer.Email == email)
-            .OrderByDescending(i => i.Booking.ArrivalDate)
+            .Where(i => bookingsWithCustomerEmail.Contains(i.BookingId))
             .ToList();
     }
 
     public List<Invoice> GetUnpaidInvoices()
     {
         return _dbContext.Invoices
-            .Include(i => i.Booking)
-                .ThenInclude(b => b.Customer)
-            .Where(i => !i.IsPaid)
-            .OrderBy(i => i.Booking.ArrivalDate)
+            .Where(i => i.IsPaid == false)
             .ToList();
     }
 }

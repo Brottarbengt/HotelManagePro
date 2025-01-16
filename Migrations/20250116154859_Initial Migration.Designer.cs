@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelManagePro.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250116115233_initial migration")]
-    partial class initialmigration
+    [Migration("20250116154859_Initial Migration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -134,9 +134,6 @@ namespace HotelManagePro.Migrations
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
 
-                    b.Property<int>("BookingId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("ExtraBeds")
                         .HasColumnType("int");
 
@@ -150,8 +147,6 @@ namespace HotelManagePro.Migrations
 
                     b.HasIndex("BookingId")
                         .IsUnique();
-
-                    b.HasIndex("BookingId1");
 
                     b.ToTable("Invoices");
                 });
@@ -216,14 +211,6 @@ namespace HotelManagePro.Migrations
                         .HasForeignKey("HotelManagePro.Features.Invoices.Models.Invoice", "BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("HotelManagePro.Features.Bookings.Models.Booking", "Booking")
-                        .WithMany()
-                        .HasForeignKey("BookingId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
                 });
 
             modelBuilder.Entity("HotelManagePro.Features.Rooms.Models.Room", b =>

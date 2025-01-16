@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HotelManagePro.Migrations
 {
     /// <inheritdoc />
-    public partial class initialmigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -83,8 +83,7 @@ namespace HotelManagePro.Migrations
                     TotalSum = table.Column<double>(type: "float", nullable: false),
                     IsPaid = table.Column<bool>(type: "bit", nullable: false),
                     ExtraBeds = table.Column<int>(type: "int", nullable: false),
-                    BookingId = table.Column<int>(type: "int", nullable: false),
-                    BookingId1 = table.Column<int>(type: "int", nullable: false)
+                    BookingId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,7 +94,6 @@ namespace HotelManagePro.Migrations
                         principalTable: "Bookings",
                         principalColumn: "BookingId",
                         onDelete: ReferentialAction.Cascade);
-                    
                 });
 
             migrationBuilder.CreateTable(
@@ -136,11 +134,6 @@ namespace HotelManagePro.Migrations
                 table: "Invoices",
                 column: "BookingId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Invoices_BookingId1",
-                table: "Invoices",
-                column: "BookingId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rooms_BookingId",

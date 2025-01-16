@@ -1,6 +1,7 @@
 ﻿using HotelManagePro.Features.Invoices.Services;
 using HotelManagePro.Features.Invoices.Models;
 using HotelManagePro.Features.Bookings.Services;
+using HotelManagePro.Features.Customers.Models;
 using Spectre.Console;
 
 namespace HotelManagePro.Features.Invoices.Controller;
@@ -31,35 +32,11 @@ public class InvoiceController
         {
             DisplayInvoice(invoice);
         }
+        Console.WriteLine("\nPress any key to continue...");
+        Console.ReadKey(true);
     }
 
-    public void SearchInvoice()
-    {
-        Console.Write("Enter invoice ID: ");
-        if (int.TryParse(Console.ReadLine(), out int id))
-        {
-            var invoice = _invoiceService.GetInvoiceById(id);
-            if (invoice != null)
-            {
-                DisplayInvoice(invoice);
-            }
-            else
-            {
-                Console.WriteLine("Invoice not found.");
-            }
-        }
-    }
-
-    public void MarkInvoiceAsPaid()
-    {
-        Console.Write("Enter invoice ID: ");
-        if (int.TryParse(Console.ReadLine(), out int id))
-        {
-            var success = _invoiceService.MarkAsPaid(id);
-            Console.WriteLine(success ? "Invoice marked as paid." : "Failed to update invoice.");
-        }
-    }
-
+    
     public void UpdateInvoice()
     {
         try
@@ -84,7 +61,7 @@ public class InvoiceController
             DisplayInvoice(invoice);
             Console.WriteLine(new string('-', 40));
 
-            Console.Write($"\nUpdate price? Current price is {invoice.TotalSum:C} (y/n): ");
+            Console.Write($"\nUpdate price? Current price is {invoice.TotalSum:C} (Any key to leave unchanged): ");
             if (Console.ReadLine()?.Trim().ToUpper() == "Y")
             {
                 Console.Write($"Enter new price ({invoice.TotalSum}): ");
@@ -106,7 +83,7 @@ public class InvoiceController
 
             if (!invoice.IsPaid)
             {
-                Console.Write("\nMark invoice as paid? (y/n): ");
+                Console.Write("\nMark invoice as paid? (Any key to leave unchanged): ");
                 if (Console.ReadLine()?.Trim().ToUpper() == "Y")
                 {
                     invoice.IsPaid = true;
@@ -158,45 +135,65 @@ public class InvoiceController
             switch (choice)
             {
                 case "Find by Customer Email":
-                    Console.Write("\nEnter customer email: ");
-                    var email = Console.ReadLine();
-                    var invoicesByEmail = _invoiceService.GetInvoicesByCustomerEmail(email);
-                    
-                    if (invoicesByEmail.Count == 0)
-                    {
-                        Console.WriteLine("No invoices found for this email.");
-                    }
-                    else
-                    {
-                        foreach (var invoice in invoicesByEmail)
-                        {
-                            DisplayInvoice(invoice);
-                        }
-                    }
+                    FindInvoiceByEmail();
                     break;
 
                 case "Show All Unpaid Invoices":
-                    var unpaidInvoices = _invoiceService.GetUnpaidInvoices();
-                    if (unpaidInvoices.Count == 0)
-                    {
-                        Console.WriteLine("No unpaid invoices found.");
-                    }
-                    else
-                    {
-                        foreach (var invoice in unpaidInvoices)
-                        {
-                            DisplayInvoice(invoice);
-                        }
-                    }
+                    ShowUnpaidInvoices();
                     break;
 
                 case "Back to Menu":
                     return;
             }
+        }
+    }
 
+    private void FindInvoiceByEmail()
+    {
+        var email = CustomerValidator.GetValidatedEmail();
+        if (email == null)
+        {
+            Console.WriteLine("Invalid email format.");
             Console.WriteLine("\nPress any key to continue...");
             Console.ReadKey(true);
+            return;
         }
+
+        List<Invoice> invoicesByEmail = _invoiceService.GetInvoicesByCustomerEmail(email);
+        
+        if (invoicesByEmail.Count == 0)
+        {
+            Console.WriteLine("No invoices found for this email.");
+        }
+        else
+        {
+            foreach (var invoice in invoicesByEmail)
+            {
+                DisplayInvoice(invoice);
+            }
+        }
+        
+        Console.WriteLine("\nPress any key to continue...");
+        Console.ReadKey(true);
+    }
+
+    private void ShowUnpaidInvoices()
+    {
+        var unpaidInvoices = _invoiceService.GetUnpaidInvoices();
+        if (unpaidInvoices.Count == 0)
+        {
+            Console.WriteLine("No unpaid invoices found.");
+        }
+        else
+        {
+            foreach (var invoice in unpaidInvoices)
+            {
+                DisplayInvoice(invoice);
+            }
+        }
+        
+        Console.WriteLine("\nPress any key to continue...");
+        Console.ReadKey(true);
     }
 
     private void DisplayInvoice(Invoice invoice)
