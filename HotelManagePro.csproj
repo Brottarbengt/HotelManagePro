@@ -8,9 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Customers\DTOs\" />
-    <Folder Include="Features\Invoices\DTOs\" />
-    <Folder Include="Features\Rooms\DTOs\" />
+    <Compile Remove="Features\Customers\DTOs\**" />
+    <Compile Remove="Features\Invoices\DTOs\**" />
+    <Compile Remove="Features\Rooms\DTOs\**" />
+    <EmbeddedResource Remove="Features\Customers\DTOs\**" />
+    <EmbeddedResource Remove="Features\Invoices\DTOs\**" />
+    <EmbeddedResource Remove="Features\Rooms\DTOs\**" />
+    <None Remove="Features\Customers\DTOs\**" />
+    <None Remove="Features\Invoices\DTOs\**" />
+    <None Remove="Features\Rooms\DTOs\**" />
   </ItemGroup>
 
   <ItemGroup>

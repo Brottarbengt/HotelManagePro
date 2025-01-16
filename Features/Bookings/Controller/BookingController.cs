@@ -20,7 +20,8 @@ public class BookingController
     private readonly CustomerController _customerController;
     private readonly CustomerService _customerService;
     private readonly FindCustomerForBooking _findCustomerForBooking;
-    private static readonly string[] choices =
+    private readonly BookingValidator _bookingValidator;
+    private readonly string[] choices =
                             [
                                 "Find by ID",
                                 "Find by Email",
@@ -34,7 +35,8 @@ public class BookingController
         InvoiceService invoiceService,
         CustomerController customerController,
         CustomerService customerService,
-        FindCustomerForBooking findCustomerForBooking)
+        FindCustomerForBooking findCustomerForBooking,
+        BookingValidator bookingValidator)
     {
         _bookingService = bookingService;
         _roomService = roomService;
@@ -42,6 +44,7 @@ public class BookingController
         _customerController = customerController;
         _customerService = customerService;
         _findCustomerForBooking = findCustomerForBooking;
+        _bookingValidator = bookingValidator;
     }
 
     
@@ -160,7 +163,130 @@ public class BookingController
 
     public void UpdateBooking()
     {
+        try
+        {
+            ShowBookingsByDateRange();
+            Console.WriteLine("\nSelect date range for the booking you want to update:");
+            var (startDate, endDate) = GetDates();
+            
+            var bookings = _bookingService.GetBookingsByDateRange(startDate, endDate);
+            if (bookings.Count == 0) return;
 
+            int bookingId;
+            while (true)
+            {
+                Console.WriteLine("\nEnter the ID of the booking to update (or press ESC to cancel):");
+                
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Escape)
+                    return;
+
+                Console.Write("Booking ID: ");
+                var input = Console.ReadLine();
+                try
+                {
+                    bookingId = _bookingValidator.GetValidBookingId(input, bookings);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Invalid input: {ex.Message}. Please try again.");
+                }
+            }
+
+            var booking = bookings.First(b => b.BookingId == bookingId);
+            
+            while (true)
+            {
+                Console.Clear();
+                DisplayBooking(booking);
+                
+                var choice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("What would you like to update?")
+                        .AddChoices([
+                        
+                            "Update Dates",
+                            "Update Number of Guests",
+                            "Update Rooms",
+                            "Save and Exit",
+                            "Cancel Changes"
+                        ]));
+
+                switch (choice)
+                {
+                    case "Update Dates":
+                        var (newArrival, newDeparture) = GetDates();
+                        booking.ArrivalDate = newArrival;
+                        booking.DepartureDate = newDeparture;
+                        break;
+
+                    case "Update Number of Guests":
+                        booking.NumberOfGuests = GetNumberOfGuests();
+                        break;
+
+                    case "Update Rooms":
+                        var availableRooms = _roomService.GetAvailableRooms(booking.ArrivalDate, booking.DepartureDate);
+                        availableRooms.AddRange(booking.Rooms); // Include currently booked rooms
+                        var selectedRooms = RoomPicker.PickRooms(availableRooms.Distinct().ToList());
+                        
+                        if (selectedRooms.Count == 0)
+                        {
+                            Console.WriteLine("No rooms selected. Keeping current rooms.");
+                            Console.WriteLine("\nPress any key to continue...");
+                            Console.ReadKey(true);
+                            continue;
+                        }
+                        
+                        booking.Rooms = selectedRooms;
+                        break;
+
+                    case "Save and Exit":
+                        var extraBeds = GetNumberOfExtraBeds(booking.NumberOfGuests, booking.Rooms);
+                        var basePrice = booking.Rooms.Sum(r => r.Price);
+                        var guestPrice = booking.NumberOfGuests * 100;
+                        var extraBedPrice = extraBeds * 150;
+                        var totalPrice = basePrice + guestPrice + extraBedPrice;
+
+                        booking.Invoice.TotalSum = totalPrice;
+                        booking.Invoice.ExtraBeds = extraBeds;
+                        
+                        Console.Clear();
+                        Console.WriteLine("Review updated booking details:");
+                        Console.WriteLine(new string('-', 40));
+                        DisplayBooking(booking);
+                        Console.WriteLine(new string('-', 40));
+                        
+                        Console.Write("\nIs this correct? Y to confirm, any other to go back to update menu (bajskorv for example).): ");
+                        var confirm = Console.ReadLine()?.Trim().ToUpper();
+                        
+                        if (confirm == "Y")
+                        {
+                            _bookingService.UpdateBooking(booking);
+                            Console.WriteLine("Booking updated successfully!");
+                            Console.WriteLine("\nPress any key to continue...");
+                            Console.ReadKey(true);
+                            return;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Returning to update menu...");
+                            Console.WriteLine("\nPress any key to continue...");
+                            Console.ReadKey(true);
+                            continue;
+                        }
+
+                    case "Cancel Changes":
+                        return;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(true);
+        }
     }
     public void ShowAllBookings()
     {
@@ -189,8 +315,12 @@ public class BookingController
     {
         try
         {
-            ShowAllBookings();
-            var bookings = _bookingService.GetAllBookings();
+            ShowBookingsByDateRange();
+            Console.WriteLine("\nSelect date range for the booking you want to remove:");
+            var (startDate, endDate) = GetDates();
+            
+            var bookings = _bookingService.GetBookingsByDateRange(startDate, endDate);
+            if (bookings.Count == 0) return;
 
             int bookingId;
             while (true)
@@ -199,7 +329,7 @@ public class BookingController
                 {
                     Console.WriteLine("Enter the ID of the booking to remove:");
                     string? input = Console.ReadLine();
-                    bookingId = BookingValidator.GetValidBookingId(input, bookings);
+                    bookingId = _bookingValidator.GetValidBookingId(input, bookings);
                     break; 
                 }
                 catch (Exception ex)
@@ -254,7 +384,7 @@ public class BookingController
         }
     }
 
-    public static void DisplayBooking(Booking booking)
+    public  void DisplayBooking(Booking booking)
     {
         Console.WriteLine($"Booking ID: {booking.BookingId}");
         Console.WriteLine($"Customer: {booking.Customer.FirstName} {booking.Customer.LastName}");
@@ -266,7 +396,7 @@ public class BookingController
         Console.WriteLine(new string('-', 40));
     }
 
-    public static int GetNumberOfGuests()
+    public  int GetNumberOfGuests()
     {
         while (true)
         {
@@ -291,7 +421,7 @@ public class BookingController
         }
     }
 
-    public static int GetNumberOfExtraBeds(int numberOfGuests, List<Room> selectedRooms)
+    public  int GetNumberOfExtraBeds(int numberOfGuests, List<Room> selectedRooms)
     {
         var standardBeds = selectedRooms.Sum(r => r.RoomType == TypeOfRoom.Single ? 1 : 2);
         var maxExtraBeds = selectedRooms.Count * 1; // 1 extra bed per room maximum
@@ -333,7 +463,7 @@ public class BookingController
         }
     }
 
-    private static (DateOnly arrivalDate, DateOnly departureDate) GetDates()
+    private  (DateOnly arrivalDate, DateOnly departureDate) GetDates()
     {
         Console.WriteLine("\nBooking Dates Selection");
         var today = DateOnly.FromDateTime(DateTime.Now);
@@ -359,5 +489,29 @@ public class BookingController
         }
 
         return (arrivalDate, departureDate);
+    }
+
+    public void ShowBookingsByDateRange()
+    {
+        Console.WriteLine("\nSelect date range to show bookings:");
+        var (startDate, endDate) = GetDates();
+        
+        var bookings = _bookingService.GetBookingsByDateRange(startDate, endDate);
+        if (bookings.Count == 0)
+        {
+            Console.WriteLine($"\nNo bookings found between {startDate:d} and {endDate:d}");
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(true);
+            return;
+        }
+
+        Console.WriteLine($"\nBookings between {startDate:d} and {endDate:d}:");
+        foreach (var booking in bookings)
+        {
+            DisplayBooking(booking);
+        }
+        
+        Console.WriteLine("\nPress any key to continue...");
+        Console.ReadKey(true);
     }
 }

@@ -20,6 +20,7 @@ public class BookingMenu : RootMenu
         [
             new MenuItem("Create New Booking", () => _bookingController.CreateNewBooking()),
             new MenuItem("Show All Bookings", () => _bookingController.ShowAllBookings()),
+            new MenuItem("Show Bookings by Date Range", () => _bookingController.ShowBookingsByDateRange()),
             new MenuItem("Search Active Booking by Email", () => _bookingController.SearchActiveBookingByEmail()),
             new MenuItem("Update Booking", () => _bookingController.UpdateBooking()),
             new MenuItem("Delete Booking", () => _bookingController.RemoveBooking()),

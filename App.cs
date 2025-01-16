@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using HotelManagePro.Features.Customers.Menus;
 using HotelManagePro.Features.Rooms.Menus;
 using HotelManagePro.Features.Invoices.Menus;
+using HotelManagePro.Features.Bookings.Models;
 
 
 namespace HotelManagePro;
@@ -57,10 +58,14 @@ public class App
             .AddScoped<RoomMenu>()
             .AddScoped<InvoiceMenu>()
             .AddScoped<FindCustomerForBooking>()
+            .AddScoped<BookingValidator>()
             .BuildServiceProvider();
 
 
         using var scope = serviceProvider.CreateScope();
+        var bookingService = scope.ServiceProvider.GetRequiredService<BookingService>();
+        bookingService.RemoveUnpaidBookings();
+
         var mainMenu = scope.ServiceProvider.GetRequiredService<MainMenu>();
         var menuNavigator = scope.ServiceProvider.GetRequiredService<MenuNavigator>();
         menuNavigator.SetTopMenu(mainMenu);

@@ -50,4 +50,31 @@ public class InvoiceService
         _dbContext.SaveChanges();
         return true;
     }
+
+
+    public void UpdateInvoice(Invoice invoice)
+    {
+        _dbContext.Update(invoice);
+        _dbContext.SaveChanges();
+    }
+
+    public List<Invoice> GetInvoicesByCustomerEmail(string? email)
+    {
+        return _dbContext.Invoices
+            .Include(i => i.Booking)
+                .ThenInclude(b => b.Customer)
+            .Where(i => i.Booking.Customer.Email == email)
+            .OrderByDescending(i => i.Booking.ArrivalDate)
+            .ToList();
+    }
+
+    public List<Invoice> GetUnpaidInvoices()
+    {
+        return _dbContext.Invoices
+            .Include(i => i.Booking)
+                .ThenInclude(b => b.Customer)
+            .Where(i => !i.IsPaid)
+            .OrderBy(i => i.Booking.ArrivalDate)
+            .ToList();
+    }
 }

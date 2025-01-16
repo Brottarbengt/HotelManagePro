@@ -14,4 +14,5 @@ public class Booking
     public List<Room> Rooms { get; set; } = new();
     public required Customer Customer { get; set; }
     public int NumberOfGuests { get; set; }
+    public DateOnly CreatedAt { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 }

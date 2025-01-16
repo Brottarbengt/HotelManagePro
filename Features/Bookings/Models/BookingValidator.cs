@@ -37,7 +37,7 @@ namespace HotelManagePro.Features.Bookings.Models
             
         }
 
-        public static int GetValidBookingId(string? input, List<Booking>? bookings)
+        public int GetValidBookingId(string? input, List<Booking>? bookings)
         {
             if (string.IsNullOrEmpty(input))
                 throw new ArgumentException("Booking ID cannot be empty.");

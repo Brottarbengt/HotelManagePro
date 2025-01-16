@@ -21,12 +21,12 @@ public class InvoiceMenu : RootMenu
 
     protected override void InitializeMenuItems()
     {
-        _menuItems.AddRange(new List<IMenuItem>
-        {
+        _menuItems.AddRange(
+        [
             new MenuItem("Show All Invoices", () => _invoiceController.ShowAllInvoices()),
-            new MenuItem("Search Invoice", () => _invoiceController.SearchInvoice()),
-            new MenuItem("Mark Invoice as Paid", () => _invoiceController.MarkInvoiceAsPaid()),
+            new MenuItem("Find Invoice", () => _invoiceController.FindInvoice()),
+            new MenuItem("Update Invoice", () => _invoiceController.UpdateInvoice()),
             new MenuItem("Back to Main Menu", () => _menuNavigator.NavigateToTopMenu())
-        });
+        ]);
     }
 }

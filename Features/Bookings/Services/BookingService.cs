@@ -22,7 +22,7 @@ namespace HotelManagePro.Features.Bookings.Services
 
         public void UpdateBooking(Booking booking)
         {
-            _dbContext.Bookings.Update(booking);
+            _dbContext.Update(booking);
             _dbContext.SaveChanges();
         }
 
@@ -87,6 +87,36 @@ namespace HotelManagePro.Features.Bookings.Services
                 .ToList();
 
             return bookedDates;
+        }
+
+        public List<Booking> GetBookingsByDateRange(DateOnly startDate, DateOnly endDate)
+        {
+            return _dbContext.Bookings
+                .Include(b => b.Customer)
+                .Include(b => b.Rooms)
+                .Include(b => b.Invoice)
+                .Where(b => b.ArrivalDate >= startDate && b.DepartureDate <= endDate)
+                .OrderBy(b => b.ArrivalDate)
+                .ToList();
+        }
+
+        public void RemoveUnpaidBookings()
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            var unpaidBookings = _dbContext.Bookings
+                .Include(b => b.Invoice)
+                .Where(b => !b.Invoice.IsPaid && b.CreatedAt.AddDays(10) < today)
+                .ToList();
+
+            foreach (var booking in unpaidBookings)
+            {
+                _dbContext.Bookings.Remove(booking);
+            }
+            
+            if (unpaidBookings.Any())
+            {
+                _dbContext.SaveChanges();
+            }
         }
     }
 }
