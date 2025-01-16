@@ -1,0 +1,16 @@
+﻿Motivering för 3NF
+
+1NF (Första normalformen):
+
+    Alla attribut innehåller atomära värden (dvs. inga upprepande grupper eller array-liknande kolumner).
+    Varje rad är unik (identifieras av en primärnyckel).
+
+2NF (Andra normalformen):
+
+    Tabellen är i 1NF.
+    Alla icke-nyckelattribut är fullständigt beroende av hela primärnyckeln (inte bara en del av den).
+
+3NF (Tredje normalformen):
+
+    Tabellen är i 2NF.
+    Inga icke-nyckelattribut är transitivt beroende av primärnyckeln (dvs. varje icke-nyckelattribut ska endast bero på primärnyckeln och inget annat icke-nyckelattribut).
