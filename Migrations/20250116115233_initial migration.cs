@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HotelManagePro.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class initialmigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,7 +39,7 @@ namespace HotelManagePro.Migrations
                     DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
                     PhoneNumber = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: false)
+                    AddressId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -48,8 +48,7 @@ namespace HotelManagePro.Migrations
                         name: "FK_Customers_Address_AddressId",
                         column: x => x.AddressId,
                         principalTable: "Address",
-                        principalColumn: "AddressId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "AddressId");
                 });
 
             migrationBuilder.CreateTable(
@@ -61,7 +60,8 @@ namespace HotelManagePro.Migrations
                     ArrivalDate = table.Column<DateOnly>(type: "date", nullable: false),
                     DepartureDate = table.Column<DateOnly>(type: "date", nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
-                    NumberOfGuests = table.Column<int>(type: "int", nullable: false)
+                    NumberOfGuests = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -83,7 +83,8 @@ namespace HotelManagePro.Migrations
                     TotalSum = table.Column<double>(type: "float", nullable: false),
                     IsPaid = table.Column<bool>(type: "bit", nullable: false),
                     ExtraBeds = table.Column<int>(type: "int", nullable: false),
-                    BookingId = table.Column<int>(type: "int", nullable: false)
+                    BookingId = table.Column<int>(type: "int", nullable: false),
+                    BookingId1 = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,6 +95,7 @@ namespace HotelManagePro.Migrations
                         principalTable: "Bookings",
                         principalColumn: "BookingId",
                         onDelete: ReferentialAction.Cascade);
+                    
                 });
 
             migrationBuilder.CreateTable(
@@ -134,6 +136,11 @@ namespace HotelManagePro.Migrations
                 table: "Invoices",
                 column: "BookingId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoices_BookingId1",
+                table: "Invoices",
+                column: "BookingId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rooms_BookingId",

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelManagePro.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250116114222_added prop on Booking model")]
-    partial class addedproponBookingmodel
+    [Migration("20250116115233_initial migration")]
+    partial class initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

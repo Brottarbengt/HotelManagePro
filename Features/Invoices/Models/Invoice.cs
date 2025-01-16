@@ -9,6 +9,6 @@ namespace HotelManagePro.Features.Invoices.Models
         public required bool IsPaid { get; set; } = false;
         public int ExtraBeds { get; set; }
         public int BookingId { get; set; }
-        public Booking Booking { get; set; } = null!;
+        public Booking Booking { get; set; }
     }
 }

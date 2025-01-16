@@ -11,7 +11,7 @@ public class Booking
     public required Invoice Invoice { get; set; }  
     public required DateOnly ArrivalDate { get; set; }
     public required DateOnly DepartureDate { get; set; }
-    public List<Room> Rooms { get; set; } = new();
+    public List<Room> Rooms { get; set; } = [];
     public required Customer Customer { get; set; }
     public int NumberOfGuests { get; set; }
     public DateOnly CreatedAt { get; set; } = DateOnly.FromDateTime(DateTime.Now);
