@@ -25,7 +25,7 @@ public class InvoiceMenu : RootMenu
         [
             new MenuItem("Show All Invoices", () => _invoiceController.ShowAllInvoices()),
             new MenuItem("Find Invoice", () => _invoiceController.FindInvoice()),
-            new MenuItem("Update Invoice", () => _invoiceController.UpdateInvoice()),
+            new MenuItem("Mark Invoice as paid", () => _invoiceController.UpdateInvoice()),
             new MenuItem("Back to Main Menu", () => _menuNavigator.NavigateToTopMenu())
         ]);
     }

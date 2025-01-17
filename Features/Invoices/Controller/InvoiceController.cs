@@ -41,7 +41,8 @@ public class InvoiceController
     {
         try
         {
-            Console.Write("\nEnter Invoice ID: ");
+            ShowUnpaidInvoices();
+            Console.Write("\nEnter Invoice ID that tou want mark as paid: ");
             if (!int.TryParse(Console.ReadLine(), out int invoiceId))
             {
                 Console.WriteLine("Invalid invoice ID.");
@@ -61,10 +62,10 @@ public class InvoiceController
             DisplayInvoice(invoice);
             Console.WriteLine(new string('-', 40));
 
-            Console.Write($"\nUpdate price? Current price is {invoice.TotalSum:C} (Any key to leave unchanged): ");
-            if (Console.ReadLine()?.Trim().ToUpper() == "Y")
+            Console.Write($"\nCurrent price is {invoice.TotalSum:C}. 'y' to update price or any key to proceed");
+            if (Console.ReadLine()?.Trim().ToLower() == "y")
             {
-                Console.Write($"Enter new price ({invoice.TotalSum}): ");
+                Console.Write($"Enter new price: ");
                 var input = Console.ReadLine();
                 if (string.IsNullOrEmpty(input))
                 {
@@ -83,8 +84,8 @@ public class InvoiceController
 
             if (!invoice.IsPaid)
             {
-                Console.Write("\nMark invoice as paid? (Any key to leave unchanged): ");
-                if (Console.ReadLine()?.Trim().ToUpper() == "Y")
+                Console.Write("\nMark invoice as paid? 'y' to mark as paid or any key to proceed: ");
+                if (Console.ReadLine()?.Trim().ToLower() == "y")
                 {
                     invoice.IsPaid = true;
                 }
@@ -96,8 +97,8 @@ public class InvoiceController
             DisplayInvoice(invoice);
             Console.WriteLine(new string('-', 40));
 
-            Console.Write("\nSave these changes? Y to confirm, any other key to cancel: ");
-            if (Console.ReadLine()?.Trim().ToUpper() == "Y")
+            Console.Write("\nSave these changes? 'y' to confirm, any other key to cancel: ");
+            if (Console.ReadLine()?.Trim().ToLower() == "y")
             {
                 _invoiceService.UpdateInvoice(invoice);
                 Console.WriteLine("Invoice updated successfully!");

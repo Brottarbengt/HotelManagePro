@@ -26,8 +26,7 @@ public class InvoiceService
 
     public List<Invoice> GetAllInvoices()
     {
-        return _dbContext.Invoices
-            .Include(i => i.BookingId)
+        return _dbContext.Invoices            
             .ToList();
     }
 
